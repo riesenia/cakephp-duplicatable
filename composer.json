@@ -1,0 +1,30 @@
+{
+    "name": "riesenia/cakephp-duplicatable",
+    "description": "CakePHP plugin for duplicating entities (including related entities)",
+    "type": "cakephp-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tomas Saghy",
+            "email": "segy@riesenia.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.16",
+        "cakephp/cakephp": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Duplicatable\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Duplicatable\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    }
+}
