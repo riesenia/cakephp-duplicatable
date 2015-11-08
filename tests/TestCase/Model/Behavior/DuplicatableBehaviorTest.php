@@ -17,7 +17,8 @@ class DuplicatableBehaviorTest extends TestCase
     public $fixtures = [
         'plugin.Duplicatable.invoices',
         'plugin.Duplicatable.invoice_items',
-        'plugin.Duplicatable.invoice_item_properties'
+        'plugin.Duplicatable.invoice_item_properties',
+        'plugin.Duplicatable.invoice_item_variations'
     ];
 
     /**
@@ -52,7 +53,7 @@ class DuplicatableBehaviorTest extends TestCase
     public function testDuplicate()
     {
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new, ['contain' => ['InvoiceItems', 'InvoiceItems.InvoiceItemProperties']]);
+        $invoice = $this->Invoices->get($new, ['contain' => ['InvoiceItems.InvoiceItemProperties', 'InvoiceItems.InvoiceItemVariations']]);
 
         $this->assertEquals('Invoice name - copy', $invoice->name);
         $this->assertEquals('Contact name', $invoice->contact_name);
@@ -67,5 +68,9 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals('NEW Property 1', $invoice->invoice_items[0]->invoice_item_properties[0]->name);
         $this->assertEquals('NEW Property 2', $invoice->invoice_items[0]->invoice_item_properties[1]->name);
         $this->assertEquals('NEW Property 3', $invoice->invoice_items[1]->invoice_item_properties[0]->name);
+
+        $this->assertEquals('Variation 1', $invoice->invoice_items[0]->invoice_item_variations[0]->name);
+        $this->assertEquals('Variation 2', $invoice->invoice_items[1]->invoice_item_variations[0]->name);
+        $this->assertEquals('Variation 3', $invoice->invoice_items[1]->invoice_item_variations[1]->name);
     }
 }

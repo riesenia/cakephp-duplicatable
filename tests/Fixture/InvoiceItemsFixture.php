@@ -12,6 +12,7 @@ class InvoiceItemsTable extends Table
 
         // associations
         $this->hasMany('InvoiceItemProperties', ['className' => 'Duplicatable\Test\Fixture\InvoiceItemPropertiesTable']);
+        $this->hasMany('InvoiceItemVariations', ['className' => 'Duplicatable\Test\Fixture\InvoiceItemVariationsTable']);
     }
 }
 

@@ -12,7 +12,7 @@ class InvoicesTable extends Table
 
         // add Duplicatable behavior
         $this->addBehavior('Duplicatable.Duplicatable', [
-            'contain' => ['InvoiceItems.InvoiceItemProperties'],
+            'contain' => ['InvoiceItems.InvoiceItemProperties', 'InvoiceItems.InvoiceItemVariations'],
             'remove' => ['created', 'InvoiceItems.created'],
             'set' => ['copied' => true],
             'prepend' => ['InvoiceItems.InvoiceItemProperties.name' => 'NEW '],

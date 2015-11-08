@@ -103,6 +103,10 @@ class DuplicatableBehavior extends Behavior
         foreach ($this->config('contain') as $contain) {
             if (preg_match('/^' . preg_quote($pathPrefix, '/') . '([^.]+)/', $contain, $matches)) {
                 foreach ($entity->{Inflector::tableize($matches[1])} as $related) {
+                    if ($related->isNew()) {
+                        continue;
+                    }
+
                     $this->_modifyEntity($related, $table->{$matches[1]}, $pathPrefix . $matches[1] . '.');
                 }
             }
