@@ -1,7 +1,7 @@
 {
     "name": "riesenia/cakephp-duplicatable",
     "description": "CakePHP ORM plugin for duplicating entities (including related entities)",
-    "keywords": ["cakephp", "orm", "copy"],
+    "keywords": ["cakephp", "orm", "copy", "duplicate"],
     "type": "cakephp-plugin",
     "license": "MIT",
     "authors": [
