@@ -1,6 +1,7 @@
 {
     "name": "riesenia/cakephp-duplicatable",
-    "description": "CakePHP plugin for duplicating entities (including related entities)",
+    "description": "CakePHP ORM plugin for duplicating entities (including related entities)",
+    "keywords": ["cakephp", "orm", "copy"],
     "type": "cakephp-plugin",
     "license": "MIT",
     "authors": [
@@ -11,10 +12,11 @@
     ],
     "require": {
         "php": ">=5.4.16",
-        "cakephp/cakephp": "~3.0"
+        "cakephp/orm": "~3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "cakephp/cakephp": "~3.0"
     },
     "autoload": {
         "psr-4": {
