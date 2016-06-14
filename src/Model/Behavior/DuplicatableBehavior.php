@@ -1,4 +1,5 @@
 <?php
+
 namespace Duplicatable\Model\Behavior;
 
 use Cake\ORM\Behavior;
@@ -16,14 +17,15 @@ use Cake\Utility\Inflector;
  * - prepend: fields and text to prepend
  * - append: fields and text to append
  */
-class DuplicatableBehavior extends Behavior
-{
+class DuplicatableBehavior extends Behavior {
+
     /**
      * Default options
      *
      * @var array
      */
     protected $_defaultConfig = [
+        'saveOptions' => [],
         'contain' => [],
         'remove' => [],
         'set' => [],
@@ -37,13 +39,12 @@ class DuplicatableBehavior extends Behavior
      * @param mixed id of duplicated entity
      * @return mixed id of new entity or false on failure
      */
-    public function duplicate($id)
-    {
+    public function duplicate($id) {
         $entity = $this->_table->get($id, ['contain' => $this->config('contain')]);
 
         $this->_modifyEntity($entity);
 
-        return $this->_table->save($entity, ['associated' => $this->config('contain')]) ? $entity->{$this->_table->primaryKey()} : false;
+        return $this->_table->save($entity, [$this->config('saveOptions'), 'associated' => $this->config('contain')]) ? $entity->{$this->_table->primaryKey()} : false;
     }
 
     /**
@@ -54,8 +55,7 @@ class DuplicatableBehavior extends Behavior
      * @param string path prefix
      * @return void
      */
-    protected function _modifyEntity(EntityInterface $entity, Association $table = null, $pathPrefix = '')
-    {
+    protected function _modifyEntity(EntityInterface $entity, Association $table = null, $pathPrefix = '') {
         if (is_null($table)) {
             $table = $this->_table;
         }
@@ -120,12 +120,12 @@ class DuplicatableBehavior extends Behavior
      * @param string path prefix
      * @return string|bool
      */
-    protected function _fieldByPath($field, $pathPrefix)
-    {
+    protected function _fieldByPath($field, $pathPrefix) {
         if (!$pathPrefix) {
             return $field;
         }
 
         return strpos($field, $pathPrefix) === 0 ? substr($field, strlen($pathPrefix)) : false;
     }
+
 }
