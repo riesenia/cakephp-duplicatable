@@ -35,6 +35,7 @@ Configuration options:
 * *set* - fields that will be set to provided value
 * *prepend* - fields that will have value prepended by provided text
 * *append* - fields that will have value appended by provided text
+* *saveOptions* - options for save on primary table
 
 ```php
 class InvoicesTable extends Table
