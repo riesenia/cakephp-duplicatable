@@ -28,7 +28,8 @@ class DuplicatableBehavior extends Behavior
         'remove' => [],
         'set' => [],
         'prepend' => [],
-        'append' => []
+        'append' => [],
+        'saveOptions' => []
     ];
 
     /**
@@ -43,7 +44,7 @@ class DuplicatableBehavior extends Behavior
 
         $this->_modifyEntity($entity);
 
-        return $this->_table->save($entity, ['associated' => $this->config('contain')]) ? $entity->{$this->_table->primaryKey()} : false;
+        return $this->_table->save($entity, array_merge($this->config('saveOptions'), ['associated' => $this->config('contain')])) ? $entity->{$this->_table->primaryKey()} : false;
     }
 
     /**
