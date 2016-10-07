@@ -5,12 +5,14 @@ use Cake\ORM\Behavior;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
 use Cake\Utility\Inflector;
+use Cake\ORM\TableRegistry;
 
 /**
  * Behavior for duplicating entities (including related entities)
  *
  * Configurable options
  * - contain: related entities to duplicate
+ * - includeTranslations: set true to duplicate translations
  * - remove: fields to remove
  * - set: fields and their default value
  * - prepend: fields and text to prepend
@@ -25,6 +27,7 @@ class DuplicatableBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'contain' => [],
+        'includeTranslations' => false,
         'remove' => [],
         'set' => [],
         'prepend' => [],
@@ -40,11 +43,48 @@ class DuplicatableBehavior extends Behavior
      */
     public function duplicate($id)
     {
-        $entity = $this->_table->get($id, ['contain' => $this->config('contain')]);
+        $entity = $this->_table->get($id, [
+            'contain' => $this->_getContain(),
+            'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : null,
+        ]);
 
         $this->_modifyEntity($entity);
 
         return $this->_table->save($entity, array_merge($this->config('saveOptions'), ['associated' => $this->config('contain')])) ? $entity->{$this->_table->primaryKey()} : false;
+    }
+
+    /**
+     * Check if translations must be included in an entity
+     *
+     * @param string $tableName support dot notation for contain table names. E.g. Invoices.InvoiceItems
+     * @return array
+     */
+    protected function _includeTranslation($tableName)
+    {
+        $tableNameParts = explode('.', $tableName);
+
+        return ($this->config('includeTranslations') && TableRegistry::get(end($tableNameParts))->behaviors()->has('Translate'));
+    }
+
+    /**
+     * Return the contain array for the get method
+     *
+     * @return array
+     */
+    protected function _getContain()
+    {
+        $contain = [];
+        foreach ($this->config('contain') as $table) {
+            if ($this->_includeTranslation($table)) {
+                $contain[$table] = function ($query) {
+                    return $query->find('translations');
+                };
+            } else {
+                $contain[] = $table;
+            }
+        }
+
+        return $contain;
     }
 
     /**
@@ -94,6 +134,13 @@ class DuplicatableBehavior extends Behavior
 
                     $entity->{$field} = $value;
                 }
+            }
+        }
+
+        // set translations as new
+        if (!empty($entity->_translations)) {
+            foreach ($entity->_translations as $translation) {
+                $translation->isNew(true);
             }
         }
 
