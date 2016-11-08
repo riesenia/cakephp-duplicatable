@@ -114,13 +114,13 @@ class DuplicatableBehaviorTest extends TestCase
     {
         $this->Invoices->behaviors()->get('Duplicatable')->config([
             'set' => [
-                'name' => function($value) {
-                    return $value . ' ' . md5($value);
+                'name' => function($entity) {
+                    return $entity->name . ' ' . md5($entity->name);
                 }
             ]
         ]);
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new, ['contain' => ['InvoiceItems.InvoiceItemProperties', 'InvoiceItems.InvoiceItemVariations']]);
+        $invoice = $this->Invoices->get($new);
         $this->assertEquals('Invoice name 09ceae7acef129ed179da25bed1d8e5e - copy', $invoice->name);
 
         $this->Invoices->behaviors()->get('Duplicatable')->config([
@@ -136,10 +136,10 @@ class DuplicatableBehaviorTest extends TestCase
     /**
      * Modifier method to be used as a callable in the tests
      * 
-     * @param string $value Value to be set
+     * @param \Cake\Datasource\EntityInterface $entity Entity being cloned
      * @return string
      */
-    public function setModifier($value) {
-        return $value . ' ' . md5($value);
+    public function setModifier($entity) {
+        return $entity->name . ' ' . md5($entity->name);
     }
 }

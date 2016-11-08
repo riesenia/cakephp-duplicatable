@@ -33,7 +33,7 @@ Configuration options:
 * *contain* - set related entities that will be duplicated
 * *includeTranslations* - set true to duplicate translations
 * *remove* - fields that will be removed from the entity
-* *set* - fields that will be set to provided value or callable to modify the value. If you provide a callable, it will take the current value as the only argument
+* *set* - fields that will be set to provided value or callable to modify the value. If you provide a callable, it will take the entity being cloned as the only argument
 * *prepend* - fields that will have value prepended by provided text
 * *append* - fields that will have value appended by provided text
 * *saveOptions* - options for save on primary table
@@ -55,8 +55,8 @@ class InvoicesTable extends Table
             'remove' => ['created', 'InvoiceItems.created'],
             // mark invoice as copied
             'set' => [
-                'name' => function($value) {
-                    return md5($value) . ' ' . $value;
+                'name' => function($entity) {
+                    return md5($entity->name) . ' ' . $entity->name;
                 },
                 'copied' => true
             ],
