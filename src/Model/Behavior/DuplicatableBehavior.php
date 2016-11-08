@@ -132,6 +132,12 @@ class DuplicatableBehavior extends Behavior
                         $value = $entity->{$field} . $value;
                     }
 
+                    if ($action == 'set') {
+                        if (is_callable($value)) {
+                            $value = $value($entity->{$field});
+                        }
+                    }
+
                     $entity->{$field} = $value;
                 }
             }
