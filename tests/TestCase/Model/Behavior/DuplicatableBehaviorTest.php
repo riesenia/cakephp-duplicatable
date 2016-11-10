@@ -47,7 +47,7 @@ class DuplicatableBehaviorTest extends TestCase
     }
 
     /**
-     * Test duplicating
+     * Test duplicating with deeply nested associations
      *
      * @return void
      */
@@ -103,5 +103,43 @@ class DuplicatableBehaviorTest extends TestCase
 
         $this->assertEquals('NEW Property 1', $invoice->invoice_items[0]->invoice_item_properties[0]->name);
         $this->assertEquals('Property 1 - es', $invoice->invoice_items[0]->invoice_item_properties[0]->_translations['es']->name);
+    }
+
+    /**
+     * Test duplicating with the `set` param defined as a callable
+     *
+     * @return void
+     */
+    public function testDuplicateWithSetCallable()
+    {
+        $this->Invoices->behaviors()->get('Duplicatable')->config([
+            'set' => [
+                'name' => function($entity) {
+                    return $entity->name . ' ' . md5($entity->name);
+                }
+            ]
+        ]);
+        $new = $this->Invoices->duplicate(1);
+        $invoice = $this->Invoices->get($new);
+        $this->assertEquals('Invoice name 09ceae7acef129ed179da25bed1d8e5e - copy', $invoice->name);
+
+        $this->Invoices->behaviors()->get('Duplicatable')->config([
+            'set' => [
+                'name' => [$this, 'setModifier']
+            ]
+        ]);
+        $new = $this->Invoices->duplicate(1);
+        $invoice = $this->Invoices->get($new);
+        $this->assertEquals('Invoice name 09ceae7acef129ed179da25bed1d8e5e - copy', $invoice->name);
+    }
+
+    /**
+     * Modifier method to be used as a callable in the tests
+     * 
+     * @param \Cake\Datasource\EntityInterface $entity Entity being cloned
+     * @return string
+     */
+    public function setModifier($entity) {
+        return $entity->name . ' ' . md5($entity->name);
     }
 }
