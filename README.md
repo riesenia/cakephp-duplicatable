@@ -28,8 +28,19 @@ Plugin::load('Duplicatable');
 
 ## Usage
 
-This behavior provides *duplicate* method for the table. Argument is primary key to duplicate.
-Configuration options:
+This behavior provides multiple methods for your `Table` objects.
+
+### Method `duplicate`
+
+This behavior provides a `duplicate` method for the table. It takes the primary key of the record to duplicate as its only argument.
+Using this method will clone the record defined by the primary key provided as well as all related records as defined in the configuration.
+
+### Method `duplicateEntity`
+
+This behavior provides a `duplicateEntity` method for the table. It mainly acts as the `duplicate` method except it does not save the duplicated record but returns the Entity to be saved instead. This is useful if you need to manipulate the Entity before saving it.
+
+## Configuration options:
+
 * *contain* - set related entities that will be duplicated
 * *includeTranslations* - set true to duplicate translations
 * *remove* - fields that will be removed from the entity
@@ -37,6 +48,8 @@ Configuration options:
 * *prepend* - fields that will have value prepended by provided text
 * *append* - fields that will have value appended by provided text
 * *saveOptions* - options for save on primary table
+
+## Examples
 
 ```php
 class InvoicesTable extends Table

@@ -43,14 +43,27 @@ class DuplicatableBehavior extends Behavior
      */
     public function duplicate($id)
     {
+        $entity = $this->duplicateEntity($id);
+
+        return $this->_table->save($entity, array_merge($this->config('saveOptions'), ['associated' => $this->config('contain')])) ? $entity->{$this->_table->primaryKey()} : false;
+    }
+
+    /**
+     * Duplicate a record and returns the Entity without saving it.
+     *
+     * @param mixed id of duplicated entity
+     * @return mixed id of new entity or false on failure
+     */
+    public function duplicateEntity($id)
+    {
         $entity = $this->_table->get($id, [
             'contain' => $this->_getContain(),
             'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : null,
         ]);
 
         $this->_modifyEntity($entity);
-
-        return $this->_table->save($entity, array_merge($this->config('saveOptions'), ['associated' => $this->config('contain')])) ? $entity->{$this->_table->primaryKey()} : false;
+        
+        return $entity;
     }
 
     /**
