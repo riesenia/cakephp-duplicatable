@@ -10,7 +10,7 @@ Update *composer.json* file to include this plugin
 ```json
 {
     "require": {
-        "riesenia/cakephp-duplicatable": "~1.0"
+        "elriri35/cakephp-duplidraft": "~1.0"
     }
 }
 ```
@@ -18,7 +18,7 @@ Update *composer.json* file to include this plugin
 Load plugin in *config/bootstrap.php*
 
 ```php
-Plugin::load('Duplicatable');
+Plugin::load('Duplidraft');
 ```
 
 ## Usage
