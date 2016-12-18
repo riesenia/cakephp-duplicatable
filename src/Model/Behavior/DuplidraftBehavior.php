@@ -18,7 +18,7 @@ use Cake\ORM\TableRegistry;
  * - prepend: fields and text to prepend
  * - append: fields and text to append
  */
-class DuplicatableBehavior extends Behavior
+class DuplidraftBehavior extends Behavior
 {
     /**
      * Default options
