@@ -1,11 +1,6 @@
-# Duplicatable behavior for CakePHP
+# Duplidraft behavior for CakePHP
 
-[![Build Status](https://img.shields.io/travis/riesenia/cakephp-duplicatable/master.svg?style=flat-square)](https://travis-ci.org/riesenia/cakephp-duplicatable)
-[![Latest Version](https://img.shields.io/packagist/v/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
-[![Total Downloads](https://img.shields.io/packagist/dt/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-
-This plugin is for CakePHP 3.x and contains behavior that handles duplicating entities
+This plugin (forked from riesenia/cakephp-duplicatable) is for CakePHP 3.x and contains behavior that handles duplicating entities
 including related data.
 
 ## Installation
