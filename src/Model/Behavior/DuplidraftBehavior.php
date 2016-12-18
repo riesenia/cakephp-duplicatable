@@ -213,8 +213,7 @@ class DuplidraftBehavior extends Behavior
                     if ($related->isNew()) {
                         continue;
                     }
-
-                    $this->_modifyEntity($related, $table->{$matches[1]}, $pathPrefix . $matches[1] . '.');
+                    $this->_modifyEntity($related,false, $table->{$matches[1]}, $pathPrefix . $matches[1] . '.');
                 }
             }
         }
