@@ -1,5 +1,5 @@
 <?php
-namespace Duplicatable\Model\Behavior;
+namespace Duplidraft\Model\Behavior;
 
 use Cake\ORM\Behavior;
 use Cake\Datasource\EntityInterface;
