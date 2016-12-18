@@ -1,5 +1,5 @@
 <?php
-namespace Duplicatable\Model\Behavior;
+namespace Duplidraft\Model\Behavior;
 
 use Cake\ORM\Behavior;
 use Cake\Datasource\EntityInterface;
@@ -18,7 +18,7 @@ use Cake\ORM\TableRegistry;
  * - prepend: fields and text to prepend
  * - append: fields and text to append
  */
-class DuplicatableBehavior extends Behavior
+class DuplidraftBehavior extends Behavior
 {
     /**
      * Default options
@@ -49,6 +49,37 @@ class DuplicatableBehavior extends Behavior
     }
 
     /**
+     * Draft
+     *
+     * @param mixed id of duplicated entity
+     * @return mixed id of new entity or false on failure
+     */
+    public function revision($id)
+    {
+        $entity = $this->draftEntity($id);
+
+        return $this->_table->save($entity, array_merge($this->config('saveOptions'), ['associated' => $this->config('contain')])) ? $entity->{$this->_table->primaryKey()} : false;
+    }
+
+    /**
+     * Draft a record and returns the Entity without saving it.
+     *
+     * @param mixed id of duplicated entity
+     * @return mixed id of new entity or false on failure
+     */
+    public function draftEntity($id)
+    {
+        $entity = $this->_table->get($id, [
+            'contain' => $this->_getContain(),
+            'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : null,
+        ]);
+
+        $this->_modifyEntity($entity,true);
+
+        return $entity;
+    }
+
+    /**
      * Duplicate a record and returns the Entity without saving it.
      *
      * @param mixed id of duplicated entity
@@ -61,8 +92,8 @@ class DuplicatableBehavior extends Behavior
             'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : null,
         ]);
 
-        $this->_modifyEntity($entity);
-        
+        $this->_modifyEntity($entity,false);
+
         return $entity;
     }
 
@@ -108,35 +139,20 @@ class DuplicatableBehavior extends Behavior
      * @param string path prefix
      * @return void
      */
-    protected function _modifyEntity(EntityInterface $entity, Association $table = null, $pathPrefix = '')
+    protected function _modifyEntity(EntityInterface $entity,$draft, Association $table = null, $pathPrefix = '')
     {
         if (is_null($table)) {
             $table = $this->_table;
         }
 
-        // unset primary key
-        unset($entity->{$table->primaryKey()});
 
-        // unset foreign key
-        if ($table instanceof Association) {
-            unset($entity->{$table->foreignKey()});
-        }
-
-        // unset configured
-        foreach ($this->config('remove') as $field) {
-            $field = $this->_fieldByPath($field, $pathPrefix);
-
-            if ($field) {
-                unset($entity->{$field});
-            }
-        }
 
         // set / prepend / append
         foreach (['set', 'prepend', 'append'] as $action) {
             foreach ($this->config($action) as $field => $value) {
                 $field = $this->_fieldByPath($field, $pathPrefix);
 
-                if ($field) {
+                if ($field && !$draft) {
                     if ($action == 'prepend') {
                         $value .= $entity->{$field};
                     }
@@ -156,6 +172,30 @@ class DuplicatableBehavior extends Behavior
             }
         }
 
+        if ($draft) {
+          $entity->parent_id = $entity->id;
+          $entity->type = 'draft';
+        }
+
+        // unset primary key
+        unset($entity->{$table->primaryKey()});
+
+        // unset foreign key
+        if ($table instanceof Association) {
+            unset($entity->{$table->foreignKey()});
+        }
+
+        // unset configured
+        foreach ($this->config('remove') as $field) {
+            $field = $this->_fieldByPath($field, $pathPrefix);
+
+            if ($field) {
+                unset($entity->{$field});
+            }
+        }
+
+
+
         // set translations as new
         if (!empty($entity->_translations)) {
             foreach ($entity->_translations as $translation) {
@@ -173,8 +213,7 @@ class DuplicatableBehavior extends Behavior
                     if ($related->isNew()) {
                         continue;
                     }
-
-                    $this->_modifyEntity($related, $table->{$matches[1]}, $pathPrefix . $matches[1] . '.');
+                    $this->_modifyEntity($related,false, $table->{$matches[1]}, $pathPrefix . $matches[1] . '.');
                 }
             }
         }
