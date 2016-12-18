@@ -62,7 +62,7 @@ class DuplicatableBehavior extends Behavior
         ]);
 
         $this->_modifyEntity($entity);
-        
+
         return $entity;
     }
 
@@ -114,23 +114,6 @@ class DuplicatableBehavior extends Behavior
             $table = $this->_table;
         }
 
-        // unset primary key
-        unset($entity->{$table->primaryKey()});
-
-        // unset foreign key
-        if ($table instanceof Association) {
-            unset($entity->{$table->foreignKey()});
-        }
-
-        // unset configured
-        foreach ($this->config('remove') as $field) {
-            $field = $this->_fieldByPath($field, $pathPrefix);
-
-            if ($field) {
-                unset($entity->{$field});
-            }
-        }
-
         // set / prepend / append
         foreach (['set', 'prepend', 'append'] as $action) {
             foreach ($this->config($action) as $field => $value) {
@@ -155,6 +138,25 @@ class DuplicatableBehavior extends Behavior
                 }
             }
         }
+
+        // unset primary key
+        unset($entity->{$table->primaryKey()});
+
+        // unset foreign key
+        if ($table instanceof Association) {
+            unset($entity->{$table->foreignKey()});
+        }
+
+        // unset configured
+        foreach ($this->config('remove') as $field) {
+            $field = $this->_fieldByPath($field, $pathPrefix);
+
+            if ($field) {
+                unset($entity->{$field});
+            }
+        }
+
+
 
         // set translations as new
         if (!empty($entity->_translations)) {
