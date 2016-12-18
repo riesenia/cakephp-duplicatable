@@ -152,7 +152,7 @@ class DuplidraftBehavior extends Behavior
             foreach ($this->config($action) as $field => $value) {
                 $field = $this->_fieldByPath($field, $pathPrefix);
 
-                if ($field) {
+                if ($field && !$draft) {
                     if ($action == 'prepend') {
                         $value .= $entity->{$field};
                     }
