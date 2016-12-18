@@ -49,6 +49,37 @@ class DuplidraftBehavior extends Behavior
     }
 
     /**
+     * Draft
+     *
+     * @param mixed id of duplicated entity
+     * @return mixed id of new entity or false on failure
+     */
+    public function revision($id) 
+    {
+        $entity = $this->draftEntity($id);
+
+        return $this->_table->save($entity, array_merge($this->config('saveOptions'), ['associated' => $this->config('contain')])) ? $entity->{$this->_table->primaryKey()} : false;
+    }
+
+    /**
+     * Draft a record and returns the Entity without saving it.
+     *
+     * @param mixed id of duplicated entity
+     * @return mixed id of new entity or false on failure
+     */
+    public function draftEntity($id)
+    {
+        $entity = $this->_table->get($id, [
+            'contain' => $this->_getContain(),
+            'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : null,
+        ]);
+
+        $this->_modifyEntity($entity,true);
+
+        return $entity;
+    }
+
+    /**
      * Duplicate a record and returns the Entity without saving it.
      *
      * @param mixed id of duplicated entity
@@ -61,7 +92,7 @@ class DuplidraftBehavior extends Behavior
             'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : null,
         ]);
 
-        $this->_modifyEntity($entity);
+        $this->_modifyEntity($entity,false);
 
         return $entity;
     }
@@ -108,11 +139,13 @@ class DuplidraftBehavior extends Behavior
      * @param string path prefix
      * @return void
      */
-    protected function _modifyEntity(EntityInterface $entity, Association $table = null, $pathPrefix = '')
+    protected function _modifyEntity(EntityInterface $entity,$draft, Association $table = null, $pathPrefix = '')
     {
         if (is_null($table)) {
             $table = $this->_table;
         }
+
+
 
         // set / prepend / append
         foreach (['set', 'prepend', 'append'] as $action) {
@@ -137,6 +170,10 @@ class DuplidraftBehavior extends Behavior
                     $entity->{$field} = $value;
                 }
             }
+        }
+
+        if ($draft) {
+          $entity->parent_id = $entity->id;
         }
 
         // unset primary key
