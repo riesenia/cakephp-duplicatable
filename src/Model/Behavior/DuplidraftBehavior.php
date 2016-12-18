@@ -54,7 +54,7 @@ class DuplidraftBehavior extends Behavior
      * @param mixed id of duplicated entity
      * @return mixed id of new entity or false on failure
      */
-    public function revision($id) 
+    public function revision($id)
     {
         $entity = $this->draftEntity($id);
 
@@ -174,6 +174,7 @@ class DuplidraftBehavior extends Behavior
 
         if ($draft) {
           $entity->parent_id = $entity->id;
+          $entity->type = 'draft';
         }
 
         // unset primary key
