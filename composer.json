@@ -1,6 +1,6 @@
 {
-    "name": "riesenia/cakephp-duplicatable",
-    "description": "CakePHP ORM plugin for duplicating entities (including related entities)",
+    "name": "elriri35/cakephp-duplidraft",
+    "description": "CakePHP ORM plugin for duplicating entities (including related entities) Forked from riesenia/cakephp-duplicatable ",
     "keywords": ["cakephp", "orm", "copy", "duplicate"],
     "type": "cakephp-plugin",
     "license": "MIT",
@@ -20,12 +20,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Duplicatable\\": "src"
+            "Duplidraft\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Duplicatable\\Test\\": "tests",
+            "Duplidraft\\Test\\": "tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     }
