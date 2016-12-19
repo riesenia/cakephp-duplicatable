@@ -62,7 +62,7 @@ class DuplicatableBehavior extends Behavior
         ]);
 
         $this->_modifyEntity($entity);
-        
+
         return $entity;
     }
 

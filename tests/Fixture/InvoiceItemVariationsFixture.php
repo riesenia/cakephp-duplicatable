@@ -1,16 +1,7 @@
 <?php
 namespace Duplicatable\Test\Fixture;
 
-use Cake\ORM\Table;
 use Cake\TestSuite\Fixture\TestFixture;
-
-class InvoiceItemVariationsTable extends Table
-{
-    public function initialize(array $config)
-    {
-        parent::initialize($config);
-    }
-}
 
 class InvoiceItemVariationsFixture extends TestFixture
 {

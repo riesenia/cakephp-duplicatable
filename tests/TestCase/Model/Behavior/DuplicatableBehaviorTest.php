@@ -31,7 +31,9 @@ class DuplicatableBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->Invoices = TableRegistry::get('Invoices', ['className' => 'Duplicatable\Test\Fixture\InvoicesTable']);
+        $this->Invoices = TableRegistry::get('Invoices', [
+            'className' => 'TestApp\Model\Table\InvoicesTable'
+        ]);
     }
 
     /**
@@ -83,9 +85,9 @@ class DuplicatableBehaviorTest extends TestCase
     public function testDuplicateEntity()
     {
         $beforeDuplicateInvoices = $this->Invoices->find()->all()->toArray();
-        
+
         $invoice = $this->Invoices->duplicateEntity(1);
-        
+
         $invoices = $this->Invoices->find()->all()->toArray();
         $this->assertEquals(count($beforeDuplicateInvoices), count($invoices));
 
@@ -168,7 +170,7 @@ class DuplicatableBehaviorTest extends TestCase
 
     /**
      * Modifier method to be used as a callable in the tests
-     * 
+     *
      * @param \Cake\Datasource\EntityInterface $entity Entity being cloned
      * @return string
      */

@@ -1,20 +1,7 @@
 <?php
 namespace Duplicatable\Test\Fixture;
 
-use Cake\ORM\Table;
 use Cake\TestSuite\Fixture\TestFixture;
-
-class InvoiceItemsTable extends Table
-{
-    public function initialize(array $config)
-    {
-        parent::initialize($config);
-
-        // associations
-        $this->hasMany('InvoiceItemProperties', ['className' => 'Duplicatable\Test\Fixture\InvoiceItemPropertiesTable']);
-        $this->hasMany('InvoiceItemVariations', ['className' => 'Duplicatable\Test\Fixture\InvoiceItemVariationsTable']);
-    }
-}
 
 class InvoiceItemsFixture extends TestFixture
 {
