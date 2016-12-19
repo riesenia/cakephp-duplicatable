@@ -58,7 +58,7 @@ class DuplicatableBehavior extends Behavior
     {
         $entity = $this->_table->get($id, [
             'contain' => $this->_getContain(),
-            'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : null,
+            'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : 'all',
         ]);
 
         $this->_modifyEntity($entity);
@@ -74,9 +74,14 @@ class DuplicatableBehavior extends Behavior
      */
     protected function _includeTranslation($tableName)
     {
-        $tableNameParts = explode('.', $tableName);
+        if (!$this->config('includeTranslations')) {
+            return false;
+        }
 
-        return ($this->config('includeTranslations') && TableRegistry::get(end($tableNameParts))->behaviors()->has('Translate'));
+        $tableNameParts = explode('.', $tableName);
+        $table = TableRegistry::get(end($tableNameParts));
+
+        return $table->behaviors()->hasFinder('translations');
     }
 
     /**
