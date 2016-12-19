@@ -18,18 +18,18 @@ class InvoicesFixture extends TestFixture
 
     public $records = [
         [
-            'id'            => 1,
-            'name'          => 'Invoice name',
-            'contact_name'  => 'Contact name',
-            'copied'        => 0,
-            'created'       => '2015-03-17 01:20:23'
+            'id' => 1,
+            'name' => 'Invoice name',
+            'contact_name' => 'Contact name',
+            'copied' => 0,
+            'created' => '2015-03-17 01:20:23'
         ],
         [
-            'id'            => 2,
-            'name'          => 'Invoice name 2',
-            'contact_name'  => 'Contact name 2',
-            'copied'        => 0,
-            'created'       => '2015-05-17 03:20:54'
+            'id' => 2,
+            'name' => 'Invoice name 2',
+            'contact_name' => 'Contact name 2',
+            'copied' => 0,
+            'created' => '2015-05-17 03:20:54'
         ]
     ];
 }

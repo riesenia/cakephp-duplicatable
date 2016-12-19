@@ -1,8 +1,8 @@
 <?php
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
-use Cake\TestSuite\TestCase;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\TestCase;
 
 /**
  * DuplicatableBehavior Test Case
@@ -149,7 +149,7 @@ class DuplicatableBehaviorTest extends TestCase
     {
         $this->Invoices->behaviors()->get('Duplicatable')->config([
             'set' => [
-                'name' => function($entity) {
+                'name' => function ($entity) {
                     return $entity->name . ' ' . md5($entity->name);
                 }
             ]
@@ -174,7 +174,8 @@ class DuplicatableBehaviorTest extends TestCase
      * @param \Cake\Datasource\EntityInterface $entity Entity being cloned
      * @return string
      */
-    public function setModifier($entity) {
+    public function setModifier($entity)
+    {
         return $entity->name . ' ' . md5($entity->name);
     }
 }

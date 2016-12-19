@@ -1,11 +1,11 @@
 <?php
 namespace Duplicatable\Model\Behavior;
 
-use Cake\ORM\Behavior;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
-use Cake\Utility\Inflector;
+use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 
 /**
  * Behavior for duplicating entities (including related entities)
@@ -36,10 +36,10 @@ class DuplicatableBehavior extends Behavior
     ];
 
     /**
-     * Duplicate
+     * Duplicate record.
      *
-     * @param mixed id of duplicated entity
-     * @return mixed id of new entity or false on failure
+     * @param int|string $id Id of entity to duplicate.
+     * @return mixed New entity or false on failure
      */
     public function duplicate($id)
     {
@@ -49,10 +49,10 @@ class DuplicatableBehavior extends Behavior
     }
 
     /**
-     * Duplicate a record and returns the Entity without saving it.
+     * Creates duplicate Entity for given record id without saving it.
      *
-     * @param mixed id of duplicated entity
-     * @return mixed id of new entity or false on failure
+     * @param int|string $id Id of entity to duplicate.
+     * @return \Cake\Datasource\EntityInterface
      */
     public function duplicateEntity($id)
     {
@@ -70,7 +70,7 @@ class DuplicatableBehavior extends Behavior
      * Check if translations must be included in an entity
      *
      * @param string $tableName support dot notation for contain table names. E.g. Invoices.InvoiceItems
-     * @return array
+     * @return bool
      */
     protected function _includeTranslation($tableName)
     {
@@ -103,9 +103,9 @@ class DuplicatableBehavior extends Behavior
     /**
      * Modify entity
      *
-     * @param \Cake\Datasource\EntityInterface entity
-     * @param \Cake\ORM\Association table
-     * @param string path prefix
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @param \Cake\ORM\Association $table Association
+     * @param string $pathPrefix Path prefix
      * @return void
      */
     protected function _modifyEntity(EntityInterface $entity, Association $table = null, $pathPrefix = '')
@@ -183,8 +183,8 @@ class DuplicatableBehavior extends Behavior
     /**
      * Return field matching path prefix or false if in the scope
      *
-     * @param string field
-     * @param string path prefix
+     * @param string $field Field
+     * @param string $pathPrefix Path prefix
      * @return string|bool
      */
     protected function _fieldByPath($field, $pathPrefix)
