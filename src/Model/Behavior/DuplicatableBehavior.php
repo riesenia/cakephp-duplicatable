@@ -39,7 +39,7 @@ class DuplicatableBehavior extends Behavior
      * Duplicate record.
      *
      * @param int|string $id Id of entity to duplicate.
-     * @return mixed New entity or false on failure
+     * @return int|string|bool Primary key value of new record or false on failure
      */
     public function duplicate($id)
     {
