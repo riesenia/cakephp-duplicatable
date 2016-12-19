@@ -1,6 +1,7 @@
 <?php
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -58,8 +59,16 @@ class DuplicatableBehaviorTest extends TestCase
      */
     public function testDuplicate()
     {
-        $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new, ['contain' => ['InvoiceItems.InvoiceItemProperties', 'InvoiceItems.InvoiceItemVariations', 'Tags']]);
+        $result = $this->Invoices->duplicate(1);
+        $this->assertInstanceOf('Cake\Datasource\EntityInterface', $result);
+
+        $invoice = $this->Invoices->get($result->id, [
+            'contain' => [
+                'InvoiceItems.InvoiceItemProperties',
+                'InvoiceItems.InvoiceItemVariations',
+                'Tags'
+            ]
+        ]);
 
         // entity
         $this->assertEquals('Invoice name - copy', $invoice->name);
@@ -146,7 +155,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->Invoices->InvoiceItems->InvoiceItemProperties->addBehavior('Translate', ['fields' => ['name']]);
 
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new, [
+        $invoice = $this->Invoices->get($new->id, [
             'contain' => [
                 'InvoiceItems',
                 'InvoiceItems.InvoiceItemProperties' => function ($query) {
@@ -179,7 +188,7 @@ class DuplicatableBehaviorTest extends TestCase
             ]
         ]);
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new);
+        $invoice = $this->Invoices->get($new->id);
         $this->assertEquals('Invoice name 09ceae7acef129ed179da25bed1d8e5e - copy', $invoice->name);
 
         $this->Invoices->behaviors()->get('Duplicatable')->config([
@@ -188,7 +197,7 @@ class DuplicatableBehaviorTest extends TestCase
             ]
         ]);
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new);
+        $invoice = $this->Invoices->get($new->id);
         $this->assertEquals('Invoice name 09ceae7acef129ed179da25bed1d8e5e - copy', $invoice->name);
     }
 
