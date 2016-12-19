@@ -1,8 +1,8 @@
 <?php
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
-use Cake\TestSuite\TestCase;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\TestCase;
 
 /**
  * DuplicatableBehavior Test Case
@@ -31,7 +31,9 @@ class DuplicatableBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->Invoices = TableRegistry::get('Invoices', ['className' => 'Duplicatable\Test\Fixture\InvoicesTable']);
+        $this->Invoices = TableRegistry::get('Invoices', [
+            'className' => 'TestApp\Model\Table\InvoicesTable'
+        ]);
     }
 
     /**
@@ -83,9 +85,9 @@ class DuplicatableBehaviorTest extends TestCase
     public function testDuplicateEntity()
     {
         $beforeDuplicateInvoices = $this->Invoices->find()->all()->toArray();
-        
+
         $invoice = $this->Invoices->duplicateEntity(1);
-        
+
         $invoices = $this->Invoices->find()->all()->toArray();
         $this->assertEquals(count($beforeDuplicateInvoices), count($invoices));
 
@@ -147,7 +149,7 @@ class DuplicatableBehaviorTest extends TestCase
     {
         $this->Invoices->behaviors()->get('Duplicatable')->config([
             'set' => [
-                'name' => function($entity) {
+                'name' => function ($entity) {
                     return $entity->name . ' ' . md5($entity->name);
                 }
             ]
@@ -168,11 +170,12 @@ class DuplicatableBehaviorTest extends TestCase
 
     /**
      * Modifier method to be used as a callable in the tests
-     * 
+     *
      * @param \Cake\Datasource\EntityInterface $entity Entity being cloned
      * @return string
      */
-    public function setModifier($entity) {
+    public function setModifier($entity)
+    {
         return $entity->name . ' ' . md5($entity->name);
     }
 }
