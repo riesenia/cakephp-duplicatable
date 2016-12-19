@@ -19,7 +19,8 @@ class InvoicesTable extends Table
                 'InvoiceItems.created'
             ],
             'set' => [
-                'copied' => true],
+                'copied' => true
+            ],
             'prepend' => [
                 'InvoiceItems.InvoiceItemProperties.name' => 'NEW '
             ],
