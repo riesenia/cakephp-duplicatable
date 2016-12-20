@@ -7,6 +7,7 @@ class InvoicesFixture extends TestFixture
 {
     public $fields = [
         'id' => ['type' => 'integer'],
+        'invoice_type_id' => ['type' => 'integer', 'default' => null, 'null' => true],
         'name' => ['type' => 'string', 'default' => null, 'null' => true],
         'contact_name' => ['type' => 'string', 'default' => null, 'null' => true],
         'copied' => ['type' => 'boolean', 'null' => false],
@@ -19,6 +20,7 @@ class InvoicesFixture extends TestFixture
     public $records = [
         [
             'id' => 1,
+            'invoice_type_id' => 2,
             'name' => 'Invoice name',
             'contact_name' => 'Contact name',
             'copied' => 0,
@@ -26,6 +28,7 @@ class InvoicesFixture extends TestFixture
         ],
         [
             'id' => 2,
+            'invoice_type_id' => 1,
             'name' => 'Invoice name 2',
             'contact_name' => 'Contact name 2',
             'copied' => 0,

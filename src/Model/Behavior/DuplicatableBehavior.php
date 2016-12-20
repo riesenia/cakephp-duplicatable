@@ -3,6 +3,7 @@ namespace Duplicatable\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -119,12 +120,17 @@ class DuplicatableBehavior extends Behavior
             $table = $this->_table;
         }
 
-        // unset primary key
-        unset($entity->{$table->primaryKey()});
+        // belongs to many is tricky
+        if ($table instanceof BelongsToMany) {
+            unset($entity->_joinData);
+        } else {
+            // unset primary key
+            unset($entity->{$table->primaryKey()});
 
-        // unset foreign key
-        if ($table instanceof Association) {
-            unset($entity->{$table->foreignKey()});
+            // unset foreign key
+            if ($table instanceof Association) {
+                unset($entity->{$table->foreignKey()});
+            }
         }
 
         // unset configured
