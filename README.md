@@ -1,6 +1,7 @@
 # Duplicatable behavior for CakePHP
 
 [![Build Status](https://img.shields.io/travis/riesenia/cakephp-duplicatable/master.svg?style=flat-square)](https://travis-ci.org/riesenia/cakephp-duplicatable)
+[![Coverage Status](https://img.shields.io/codecov/c/github/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://codecov.io/github/riesenia/cakephp-duplicatable)
 [![Latest Version](https://img.shields.io/packagist/v/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
 [![Total Downloads](https://img.shields.io/packagist/dt/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
@@ -10,14 +11,10 @@ including related data.
 
 ## Installation
 
-Update *composer.json* file to include this plugin
+Using composer
 
-```json
-{
-    "require": {
-        "riesenia/cakephp-duplicatable": "~1.0"
-    }
-}
+```
+composer require riesenia/cakephp-duplicatable
 ```
 
 Load plugin in *config/bootstrap.php*
