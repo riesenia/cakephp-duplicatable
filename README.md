@@ -11,7 +11,7 @@ including related data.
 
 ## Installation
 
-Update *composer.json* file to include this plugin
+Using composer
 
 ```
 composer require riesenia/cakephp-duplicatable
