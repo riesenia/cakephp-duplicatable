@@ -66,7 +66,7 @@ class DuplicatableBehavior extends Behavior
             'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : 'all',
         ]);
 
-        $this->_modifyEntity($entity);
+        $this->_modifyEntity($entity, $this->_table);
 
         return $entity;
     }
@@ -114,26 +114,22 @@ class DuplicatableBehavior extends Behavior
      * Modify entity
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity
-     * @param \Cake\ORM\Association $table Association
+     * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @param string $pathPrefix Path prefix
      * @return void
      */
-    protected function _modifyEntity(EntityInterface $entity, Association $table = null, $pathPrefix = '')
+    protected function _modifyEntity(EntityInterface $entity, $object, $pathPrefix = '')
     {
-        if (is_null($table)) {
-            $table = $this->_table;
-        }
-
         // belongs to many is tricky
-        if ($table instanceof BelongsToMany) {
+        if ($object instanceof BelongsToMany) {
             unset($entity->_joinData);
         } else {
             // unset primary key
-            unset($entity->{$table->primaryKey()});
+            unset($entity->{$object->primaryKey()});
 
             // unset foreign key
-            if ($table instanceof Association) {
-                unset($entity->{$table->foreignKey()});
+            if ($object instanceof Association) {
+                unset($entity->{$object->foreignKey()});
             }
         }
 
@@ -185,14 +181,14 @@ class DuplicatableBehavior extends Behavior
         foreach ($this->config('contain') as $contain) {
             if (preg_match('/^' . preg_quote($pathPrefix, '/') . '([^.]+)/', $contain, $matches)) {
                 $assocName = $matches[1];
-                $propertyName = $table->{$assocName}->property();
+                $propertyName = $object->{$assocName}->property();
 
                 foreach ($entity->{$propertyName} as $related) {
                     if ($related->isNew()) {
                         continue;
                     }
 
-                    $this->_modifyEntity($related, $table->{$assocName}, $pathPrefix . $assocName . '.');
+                    $this->_modifyEntity($related, $object->{$assocName}, $pathPrefix . $assocName . '.');
                 }
             }
         }
