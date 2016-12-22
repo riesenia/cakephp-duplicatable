@@ -1,6 +1,7 @@
 <?php
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -58,8 +59,16 @@ class DuplicatableBehaviorTest extends TestCase
      */
     public function testDuplicate()
     {
-        $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new, ['contain' => ['InvoiceItems.InvoiceItemProperties', 'InvoiceItems.InvoiceItemVariations', 'Tags']]);
+        $result = $this->Invoices->duplicate(1);
+        $this->assertInstanceOf('Cake\Datasource\EntityInterface', $result);
+
+        $invoice = $this->Invoices->get($result->id, [
+            'contain' => [
+                'InvoiceItems.InvoiceItemProperties',
+                'InvoiceItems.InvoiceItemVariations',
+                'Tags'
+            ]
+        ]);
 
         // entity
         $this->assertEquals('Invoice name - copy', $invoice->name);
@@ -68,18 +77,18 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals(null, $invoice->created);
 
         // has many
-        $this->assertEquals('Item 1', $invoice->invoice_items[0]->name);
-        $this->assertEquals(null, $invoice->invoice_items[0]->created);
-        $this->assertEquals('Item 2', $invoice->invoice_items[1]->name);
-        $this->assertEquals(null, $invoice->invoice_items[1]->created);
+        $this->assertEquals('Item 1', $invoice->items[0]->name);
+        $this->assertEquals(null, $invoice->items[0]->created);
+        $this->assertEquals('Item 2', $invoice->items[1]->name);
+        $this->assertEquals(null, $invoice->items[1]->created);
 
         // double has many
-        $this->assertEquals('NEW Property 1', $invoice->invoice_items[0]->invoice_item_properties[0]->name);
-        $this->assertEquals('NEW Property 2', $invoice->invoice_items[0]->invoice_item_properties[1]->name);
-        $this->assertEquals('NEW Property 3', $invoice->invoice_items[1]->invoice_item_properties[0]->name);
-        $this->assertEquals('Variation 1', $invoice->invoice_items[0]->invoice_item_variations[0]->name);
-        $this->assertEquals('Variation 2', $invoice->invoice_items[1]->invoice_item_variations[0]->name);
-        $this->assertEquals('Variation 3', $invoice->invoice_items[1]->invoice_item_variations[1]->name);
+        $this->assertEquals('NEW Property 1', $invoice->items[0]->invoice_item_properties[0]->name);
+        $this->assertEquals('NEW Property 2', $invoice->items[0]->invoice_item_properties[1]->name);
+        $this->assertEquals('NEW Property 3', $invoice->items[1]->invoice_item_properties[0]->name);
+        $this->assertEquals('Variation 1', $invoice->items[0]->invoice_item_variations[0]->name);
+        $this->assertEquals('Variation 2', $invoice->items[1]->invoice_item_variations[0]->name);
+        $this->assertEquals('Variation 3', $invoice->items[1]->invoice_item_variations[1]->name);
 
         // belongs to
         $this->assertEquals(2, $invoice->invoice_type_id);
@@ -115,18 +124,18 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals(1, $invoice->copied);
         $this->assertEquals(null, $invoice->created);
 
-        $this->assertEquals('Item 1', $invoice->invoice_items[0]->name);
-        $this->assertEquals(null, $invoice->invoice_items[0]->created);
-        $this->assertEquals('Item 2', $invoice->invoice_items[1]->name);
-        $this->assertEquals(null, $invoice->invoice_items[1]->created);
+        $this->assertEquals('Item 1', $invoice->items[0]->name);
+        $this->assertEquals(null, $invoice->items[0]->created);
+        $this->assertEquals('Item 2', $invoice->items[1]->name);
+        $this->assertEquals(null, $invoice->items[1]->created);
 
-        $this->assertEquals('NEW Property 1', $invoice->invoice_items[0]->invoice_item_properties[0]->name);
-        $this->assertEquals('NEW Property 2', $invoice->invoice_items[0]->invoice_item_properties[1]->name);
-        $this->assertEquals('NEW Property 3', $invoice->invoice_items[1]->invoice_item_properties[0]->name);
+        $this->assertEquals('NEW Property 1', $invoice->items[0]->invoice_item_properties[0]->name);
+        $this->assertEquals('NEW Property 2', $invoice->items[0]->invoice_item_properties[1]->name);
+        $this->assertEquals('NEW Property 3', $invoice->items[1]->invoice_item_properties[0]->name);
 
-        $this->assertEquals('Variation 1', $invoice->invoice_items[0]->invoice_item_variations[0]->name);
-        $this->assertEquals('Variation 2', $invoice->invoice_items[1]->invoice_item_variations[0]->name);
-        $this->assertEquals('Variation 3', $invoice->invoice_items[1]->invoice_item_variations[1]->name);
+        $this->assertEquals('Variation 1', $invoice->items[0]->invoice_item_variations[0]->name);
+        $this->assertEquals('Variation 2', $invoice->items[1]->invoice_item_variations[0]->name);
+        $this->assertEquals('Variation 3', $invoice->items[1]->invoice_item_variations[1]->name);
 
         $this->assertEquals(1, $invoice->tags[0]->id);
         $this->assertEquals('Tag 1', $invoice->tags[0]->name);
@@ -146,7 +155,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->Invoices->InvoiceItems->InvoiceItemProperties->addBehavior('Translate', ['fields' => ['name']]);
 
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new, [
+        $invoice = $this->Invoices->get($new->id, [
             'contain' => [
                 'InvoiceItems',
                 'InvoiceItems.InvoiceItemProperties' => function ($query) {
@@ -160,8 +169,8 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals('Invoice name - copy', $invoice->name);
         $this->assertEquals('Invoice name - es', $invoice->_translations['es']->name);
 
-        $this->assertEquals('NEW Property 1', $invoice->invoice_items[0]->invoice_item_properties[0]->name);
-        $this->assertEquals('Property 1 - es', $invoice->invoice_items[0]->invoice_item_properties[0]->_translations['es']->name);
+        $this->assertEquals('NEW Property 1', $invoice->items[0]->invoice_item_properties[0]->name);
+        $this->assertEquals('Property 1 - es', $invoice->items[0]->invoice_item_properties[0]->_translations['es']->name);
     }
 
     /**
@@ -179,7 +188,7 @@ class DuplicatableBehaviorTest extends TestCase
             ]
         ]);
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new);
+        $invoice = $this->Invoices->get($new->id);
         $this->assertEquals('Invoice name 09ceae7acef129ed179da25bed1d8e5e - copy', $invoice->name);
 
         $this->Invoices->behaviors()->get('Duplicatable')->config([
@@ -188,7 +197,7 @@ class DuplicatableBehaviorTest extends TestCase
             ]
         ]);
         $new = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($new);
+        $invoice = $this->Invoices->get($new->id);
         $this->assertEquals('Invoice name 09ceae7acef129ed179da25bed1d8e5e - copy', $invoice->name);
     }
 

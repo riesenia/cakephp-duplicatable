@@ -33,7 +33,8 @@ class InvoicesTable extends Table
         $this->belongsTo('InvoiceTypes');
         $this->belongsToMany('Tags');
         $this->hasMany('InvoiceItems', [
-            'className' => 'TestApp\Model\Table\InvoiceItemsTable'
+            'className' => 'TestApp\Model\Table\InvoiceItemsTable',
+            'propertyName' => 'items'
         ]);
     }
 }
