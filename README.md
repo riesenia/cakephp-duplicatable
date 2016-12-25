@@ -38,8 +38,9 @@ This behavior provides a `duplicateEntity` method for the table. It mainly acts 
 
 ## Configuration options:
 
+* *finder* - finder to use to get entities. E.g. Set to "translations" to fetch
+  and duplicate translations too. Defaults to "all".
 * *contain* - set related entities that will be duplicated
-* *includeTranslations* - set true to duplicate translations
 * *remove* - fields that will be removed from the entity
 * *set* - fields that will be set to provided value or callable to modify the value. If you provide a callable, it will take the entity being cloned as the only argument
 * *prepend* - fields that will have value prepended by provided text
@@ -57,10 +58,10 @@ class InvoicesTable extends Table
 
         // add Duplicatable behavior
         $this->addBehavior('Duplicatable.Duplicatable', [
+            // table finder
+            'finder' => 'all',
             // duplicate also items and their properties
             'contain' => ['InvoiceItems.InvoiceItemProperties'],
-            // duplicate the translations if TranslateBehavior is loaded (also include related entities translations)
-            'includeTranslations' => true,
             // remove created field from both invoice and items
             'remove' => ['created', 'InvoiceItems.created'],
             // mark invoice as copied

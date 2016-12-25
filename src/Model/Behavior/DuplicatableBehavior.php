@@ -6,13 +6,16 @@ use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Behavior for duplicating entities (including related entities)
  *
- * Configurable options
+ * Configurable options:
+ * - finder: Finder to use. Defaults to 'all'.
  * - contain: related entities to duplicate
- * - includeTranslations: set true to duplicate translations
+ * - includeTranslations: set true to duplicate translations.
+ *   This option is deprecated, instead set "finder" to "translations".
  * - remove: fields to remove
  * - set: fields and their default value
  * - prepend: fields and text to prepend
@@ -26,6 +29,7 @@ class DuplicatableBehavior extends Behavior
      * @var array
      */
     protected $_defaultConfig = [
+        'finder' => 'all',
         'contain' => [],
         'includeTranslations' => false,
         'remove' => [],
@@ -62,7 +66,7 @@ class DuplicatableBehavior extends Behavior
     {
         $entity = $this->_table->get($id, [
             'contain' => $this->_getContain(),
-            'finder' => $this->_includeTranslation($this->_table->alias()) ? 'translations' : 'all',
+            'finder' => $this->_getFinder(),
         ]);
 
         $this->_modifyEntity($entity, $this->_table);
@@ -71,38 +75,53 @@ class DuplicatableBehavior extends Behavior
     }
 
     /**
-     * Check if translations must be included in an entity
+     * Return finder to use for fetching entities.
      *
-     * @param string $tableName support dot notation for contain table names. E.g. Invoices.InvoiceItems
-     * @return bool
+     * @param string|null $assocPath Dot separated association path. E.g. Invoices.InvoiceItems
+     * @return string
      */
-    protected function _includeTranslation($tableName)
+    protected function _getFinder($assocPath = null)
     {
-        if (!$this->config('includeTranslations')) {
-            return false;
+        $finder = $this->config('finder');
+        if ($this->config('includeTranslations')) {
+            $finder = 'translations';
         }
 
-        $tableNameParts = explode('.', $tableName);
-        $table = TableRegistry::get(end($tableNameParts));
+        if ($finder === 'all') {
+            return $finder;
+        }
 
-        return $table->behaviors()->hasFinder('translations');
+        $object = $this->_table;
+        if ($assocPath) {
+            $parts = explode('.', $assocPath);
+            foreach ($parts as $prop) {
+                $object = $object->{$prop};
+            }
+        }
+
+        if (!$object->hasFinder($finder)) {
+            $finder = 'all';
+        }
+
+        return $finder;
     }
 
     /**
-     * Return the contain array for the get method
+     * Return the contain array modified to use custom finder as required.
      *
      * @return array
      */
     protected function _getContain()
     {
         $contain = [];
-        foreach ($this->config('contain') as $table) {
-            if ($this->_includeTranslation($table)) {
-                $contain[$table] = function ($query) {
-                    return $query->find('translations');
-                };
+        foreach ($this->config('contain') as $assocPath) {
+            $finder = $this->_getFinder($assocPath);
+            if ($finder === 'all') {
+                $contain[] = $assocPath;
             } else {
-                $contain[] = $table;
+                $contain[$assocPath] = function ($query) use ($finder) {
+                    return $query->find($finder);
+                };
             }
         }
 
