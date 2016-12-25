@@ -192,10 +192,9 @@ class DuplicatableBehavior extends Behavior
     /**
      * Drill down the related properties based on containments and modify each entity.
      *
-     * @param string $action Action to perform.
      * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @param array $parts Related properties chain.
-     * @param mixed $value Value to set or use for modification.
      * @return void
      */
     protected function _drillDownAssoc(EntityInterface $entity, $object, array $parts)
@@ -228,6 +227,7 @@ class DuplicatableBehavior extends Behavior
         $prop = array_shift($parts);
         if (empty($parts)) {
             $this->_doAction($action, $entity, $prop, $value);
+
             return;
         }
 
