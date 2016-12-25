@@ -70,6 +70,7 @@ class DuplicatableBehavior extends Behavior
         ]);
 
         $this->_modifyEntity($entity, $this->_table);
+        $this->_processEntity($entity);
 
         return $entity;
     }
@@ -151,40 +152,6 @@ class DuplicatableBehavior extends Behavior
             }
         }
 
-        // unset configured
-        foreach ($this->config('remove') as $field) {
-            $field = $this->_fieldByPath($field, $pathPrefix);
-
-            if ($field) {
-                unset($entity->{$field});
-            }
-        }
-
-        // set / prepend / append
-        foreach (['set', 'prepend', 'append'] as $action) {
-            foreach ($this->config($action) as $field => $value) {
-                $field = $this->_fieldByPath($field, $pathPrefix);
-
-                if ($field) {
-                    if ($action == 'prepend') {
-                        $value .= $entity->{$field};
-                    }
-
-                    if ($action == 'append') {
-                        $value = $entity->{$field} . $value;
-                    }
-
-                    if ($action == 'set') {
-                        if (is_callable($value)) {
-                            $value = $value($entity);
-                        }
-                    }
-
-                    $entity->{$field} = $value;
-                }
-            }
-        }
-
         // set translations as new
         if (!empty($entity->_translations)) {
             foreach ($entity->_translations as $translation) {
@@ -209,6 +176,82 @@ class DuplicatableBehavior extends Behavior
                     $this->_modifyEntity($related, $object->{$assocName}, $pathPrefix . $assocName . '.');
                 }
             }
+        }
+    }
+
+    /**
+     * Process setting, removing, modifying entity properties based on config.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @return void
+     */
+    protected function _processEntity(EntityInterface $entity)
+    {
+        foreach ($this->config('remove') as $field) {
+            $parts = explode('.', $field);
+            $this->_drillDownEntity('remove', $entity, $parts);
+        }
+
+        foreach (['set', 'prepend', 'append'] as $action) {
+            foreach ($this->config($action) as $field => $value) {
+                $parts = explode('.', $field);
+                $this->_drillDownEntity($action, $entity, $parts, $value);
+            }
+        }
+    }
+
+    /**
+     * Drill down the related properties and modify the leaf property.
+     *
+     * @param string $action Action to perform.
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @param array $parts Related properties chain.
+     * @param mixed $value Value to set or use for modification.
+     * @return void
+     */
+    protected function _drillDownEntity($action, EntityInterface $entity, array $parts, $value = null)
+    {
+        $prop = array_shift($parts);
+        if (empty($parts)) {
+            $this->_doAction($action, $entity, $prop, $value);
+            return;
+        }
+
+        foreach ($entity->{$prop} as $key => $e) {
+            $this->_drillDownEntity($action, $e, $parts, $value);
+        }
+    }
+
+    /**
+     * Perform specified action.
+     *
+     * @param string $action Action to perform.
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @param string $prop Property name.
+     * @param mixed $value Value to set or use for modification.
+     * @return void
+     */
+    protected function _doAction($action, EntityInterface $entity, $prop, $value = null)
+    {
+        switch ($action) {
+            case 'remove':
+                $entity->unsetProperty($prop);
+                break;
+
+            case 'set':
+                if (is_callable($value)) {
+                    $value = $value($entity);
+                }
+                $entity->set($prop, $value);
+                break;
+
+            case 'prepend':
+                $entity->set($prop, $value . $entity->get($prop));
+                break;
+
+            case 'append':
+                $entity->set($prop, $entity->get($prop) . $value);
+                break;
         }
     }
 

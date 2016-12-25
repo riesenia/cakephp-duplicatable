@@ -63,7 +63,7 @@ class InvoicesTable extends Table
             // duplicate also items and their properties
             'contain' => ['InvoiceItems.InvoiceItemProperties'],
             // remove created field from both invoice and items
-            'remove' => ['created', 'InvoiceItems.created'],
+            'remove' => ['created', 'invoice_items.created'],
             // mark invoice as copied
             'set' => [
                 'name' => function($entity) {
@@ -72,7 +72,7 @@ class InvoicesTable extends Table
                 'copied' => true
             ],
             // prepend properties name
-            'prepend' => ['InvoiceItems.InvoiceItemProperties.name' => 'NEW '],
+            'prepend' => ['invoice_items.invoice_items_properties.name' => 'NEW '],
             // append copy to the name
             'append' => ['name' => ' - copy']
         ]);
