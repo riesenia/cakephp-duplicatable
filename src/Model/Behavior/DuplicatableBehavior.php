@@ -6,7 +6,6 @@ use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 
 /**
  * Behavior for duplicating entities (including related entities)
