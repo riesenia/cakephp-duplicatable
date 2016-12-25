@@ -69,7 +69,6 @@ class DuplicatableBehavior extends Behavior
             'finder' => $this->_getFinder(),
         ]);
 
-        $this->_modifyEntity($entity, $this->_table);
         $this->_processEntity($entity);
 
         return $entity;
@@ -134,10 +133,9 @@ class DuplicatableBehavior extends Behavior
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
-     * @param string $pathPrefix Path prefix
      * @return void
      */
-    protected function _modifyEntity(EntityInterface $entity, $object, $pathPrefix = '')
+    protected function _modifyEntity(EntityInterface $entity, $object)
     {
         // belongs to many is tricky
         if ($object instanceof BelongsToMany) {
@@ -161,22 +159,6 @@ class DuplicatableBehavior extends Behavior
 
         // set as new
         $entity->isNew(true);
-
-        // modify related entities
-        foreach ($this->config('contain') as $contain) {
-            if (preg_match('/^' . preg_quote($pathPrefix, '/') . '([^.]+)/', $contain, $matches)) {
-                $assocName = $matches[1];
-                $propertyName = $object->{$assocName}->property();
-
-                foreach ($entity->{$propertyName} as $related) {
-                    if ($related->isNew()) {
-                        continue;
-                    }
-
-                    $this->_modifyEntity($related, $object->{$assocName}, $pathPrefix . $assocName . '.');
-                }
-            }
-        }
     }
 
     /**
@@ -187,6 +169,13 @@ class DuplicatableBehavior extends Behavior
      */
     protected function _processEntity(EntityInterface $entity)
     {
+        foreach ($this->config('contain') as $contain) {
+            $parts = explode('.', $contain);
+            $this->_drillDownAssoc($entity, $this->_table, $parts);
+        }
+
+        $this->_modifyEntity($entity, $this->_table);
+
         foreach ($this->config('remove') as $field) {
             $parts = explode('.', $field);
             $this->_drillDownEntity('remove', $entity, $parts);
@@ -201,7 +190,32 @@ class DuplicatableBehavior extends Behavior
     }
 
     /**
-     * Drill down the related properties and modify the leaf property.
+     * Drill down the related properties based on containments and modify each entity.
+     *
+     * @param string $action Action to perform.
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @param array $parts Related properties chain.
+     * @param mixed $value Value to set or use for modification.
+     * @return void
+     */
+    protected function _drillDownAssoc(EntityInterface $entity, $object, array $parts)
+    {
+        $assocName = array_shift($parts);
+        $prop = $object->{$assocName}->property();
+
+        foreach ($entity->{$prop} as $e) {
+            if (!empty($parts)) {
+                $this->_drillDownAssoc($e, $object->{$assocName}, $parts);
+            }
+
+            if (!$entity->isNew()) {
+                $this->_modifyEntity($e, $object->{$assocName});
+            }
+        }
+    }
+
+    /**
+     * Drill down the properties and modify the leaf property.
      *
      * @param string $action Action to perform.
      * @param \Cake\Datasource\EntityInterface $entity Entity
@@ -253,21 +267,5 @@ class DuplicatableBehavior extends Behavior
                 $entity->set($prop, $entity->get($prop) . $value);
                 break;
         }
-    }
-
-    /**
-     * Return field matching path prefix or false if in the scope
-     *
-     * @param string $field Field
-     * @param string $pathPrefix Path prefix
-     * @return string|bool
-     */
-    protected function _fieldByPath($field, $pathPrefix)
-    {
-        if (!$pathPrefix) {
-            return $field;
-        }
-
-        return strpos($field, $pathPrefix) === 0 ? substr($field, strlen($pathPrefix)) : false;
     }
 }
