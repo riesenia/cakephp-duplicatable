@@ -17,13 +17,13 @@ class InvoicesTable extends Table
             ],
             'remove' => [
                 'created',
-                'InvoiceItems.created'
+                'items.created'
             ],
             'set' => [
                 'copied' => true
             ],
             'prepend' => [
-                'InvoiceItems.InvoiceItemProperties.name' => 'NEW '
+                'items.invoice_item_properties.name' => 'NEW '
             ],
             'append' => [
                 'name' => ' - copy'
