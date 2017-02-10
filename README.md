@@ -38,8 +38,7 @@ This behavior provides a `duplicateEntity` method for the table. It mainly acts 
 
 ## Configuration options:
 
-* *finder* - finder to use to get entities. E.g. Set to "translations" to fetch
-  and duplicate translations too. Defaults to "all".
+* *finder* - finder to use to get entities. Set to "translations" to fetch and duplicate translations too. Defaults to "all". Possible to set an array for more finders.
 * *contain* - set related entities that will be duplicated
 * *remove* - fields that will be removed from the entity
 * *set* - fields that will be set to provided value or callable to modify the value. If you provide a callable, it will take the entity being cloned as the only argument

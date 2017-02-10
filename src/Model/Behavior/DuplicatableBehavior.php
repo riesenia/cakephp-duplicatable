@@ -47,13 +47,7 @@ class DuplicatableBehavior extends Behavior
      */
     public function duplicate($id)
     {
-        $entity = $this->duplicateEntity($id);
-        $config = $this->config();
-
-        return $this->_table->save(
-            $entity,
-            $config['saveOptions'] + ['associated' => $config['contain']]
-        );
+        return $this->_table->save($this->duplicateEntity($id), $this->config('saveOptions') + ['associated' => $this->config('contain')]);
     }
 
     /**
@@ -64,12 +58,39 @@ class DuplicatableBehavior extends Behavior
      */
     public function duplicateEntity($id)
     {
-        $entity = $this->_table->get($id, [
-            'contain' => $this->_getContain(),
-            'finder' => $this->_getFinder(),
-        ]);
+        $query = $this->_table;
 
-        $this->_processEntity($entity);
+        foreach ($this->_getFinder() as $finder) {
+            $query = $query->find($finder);
+        }
+
+        $contain = $this->_getContain();
+
+        if (!empty($contain)) {
+            $query = $query->contain($contain);
+        }
+
+        $entity = $query->where(['id' => $id])->firstOrFail();
+
+        // process entity
+        foreach ($this->config('contain') as $contain) {
+            $parts = explode('.', $contain);
+            $this->_drillDownAssoc($entity, $this->_table, $parts);
+        }
+
+        $this->_modifyEntity($entity, $this->_table);
+
+        foreach ($this->config('remove') as $field) {
+            $parts = explode('.', $field);
+            $this->_drillDownEntity('remove', $entity, $parts);
+        }
+
+        foreach (['set', 'prepend', 'append'] as $action) {
+            foreach ($this->config($action) as $field => $value) {
+                $parts = explode('.', $field);
+                $this->_drillDownEntity($action, $entity, $parts, $value);
+            }
+        }
 
         return $entity;
     }
@@ -82,13 +103,19 @@ class DuplicatableBehavior extends Behavior
      */
     protected function _getFinder($assocPath = null)
     {
-        $finder = $this->config('finder');
-        if ($this->config('includeTranslations')) {
-            $finder = 'translations';
+        $finders = $this->config('finder');
+
+        if (!is_array($finders)) {
+            $finders = [$finders];
         }
 
-        if ($finder === 'all') {
-            return $finder;
+        // for backward compatibility
+        if ($this->config('includeTranslations')) {
+            $finders[] = 'translations';
+        }
+
+        if (count($finders) == 1 && $finders[0] == 'all') {
+            return $finders;
         }
 
         $object = $this->_table;
@@ -99,11 +126,21 @@ class DuplicatableBehavior extends Behavior
             }
         }
 
-        if (!$object->hasFinder($finder)) {
-            $finder = 'all';
+        $tmp = [];
+
+        foreach ($finders as $finder) {
+            if ($object->hasFinder($finder)) {
+                $tmp[] = $finder;
+            }
         }
 
-        return $finder;
+        if (empty($tmp)) {
+            $finders = ['all'];
+        }
+
+        $finders = array_unique($tmp);
+
+        return $finders;
     }
 
     /**
@@ -115,12 +152,16 @@ class DuplicatableBehavior extends Behavior
     {
         $contain = [];
         foreach ($this->config('contain') as $assocPath) {
-            $finder = $this->_getFinder($assocPath);
-            if ($finder === 'all') {
+            $finders = $this->_getFinder($assocPath);
+            if (count($finders) == 1 && $finders[0] == 'all') {
                 $contain[] = $assocPath;
             } else {
-                $contain[$assocPath] = function ($query) use ($finder) {
-                    return $query->find($finder);
+                $contain[$assocPath] = function ($query) use ($finders) {
+                    foreach ($finders as $finder) {
+                        $query->find($finder);
+                    }
+
+                    return $query;
                 };
             }
         }
@@ -162,34 +203,6 @@ class DuplicatableBehavior extends Behavior
     }
 
     /**
-     * Process setting, removing, modifying entity properties based on config.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Entity
-     * @return void
-     */
-    protected function _processEntity(EntityInterface $entity)
-    {
-        foreach ($this->config('contain') as $contain) {
-            $parts = explode('.', $contain);
-            $this->_drillDownAssoc($entity, $this->_table, $parts);
-        }
-
-        $this->_modifyEntity($entity, $this->_table);
-
-        foreach ($this->config('remove') as $field) {
-            $parts = explode('.', $field);
-            $this->_drillDownEntity('remove', $entity, $parts);
-        }
-
-        foreach (['set', 'prepend', 'append'] as $action) {
-            foreach ($this->config($action) as $field => $value) {
-                $parts = explode('.', $field);
-                $this->_drillDownEntity($action, $entity, $parts, $value);
-            }
-        }
-    }
-
-    /**
      * Drill down the related properties based on containments and modify each entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity
@@ -207,7 +220,7 @@ class DuplicatableBehavior extends Behavior
                 $this->_drillDownAssoc($e, $object->{$assocName}, $parts);
             }
 
-            if (!$entity->isNew()) {
+            if (!$e->isNew()) {
                 $this->_modifyEntity($e, $object->{$assocName});
             }
         }
