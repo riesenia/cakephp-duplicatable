@@ -215,13 +215,24 @@ class DuplicatableBehavior extends Behavior
         $assocName = array_shift($parts);
         $prop = $object->{$assocName}->property();
 
-        foreach ($entity->{$prop} as $e) {
+        if (!is_array($entity->{$prop})) {
+
             if (!empty($parts)) {
-                $this->_drillDownAssoc($e, $object->{$assocName}, $parts);
+                $this->_drillDownAssoc($entity->{$prop}, $object->{$assocName}, $parts);
             }
 
-            if (!$e->isNew()) {
-                $this->_modifyEntity($e, $object->{$assocName});
+            if (!$entity->{$prop}->isNew()) {
+                $this->_modifyEntity($entity->{$prop}, $object->{$assocName});
+            }
+        } else {
+            foreach ($entity->{$prop} as $e) {
+                if (!empty($parts)) {
+                    $this->_drillDownAssoc($e, $object->{$assocName}, $parts);
+                }
+
+                if (!$e->isNew()) {
+                    $this->_modifyEntity($e, $object->{$assocName});
+                }
             }
         }
     }
