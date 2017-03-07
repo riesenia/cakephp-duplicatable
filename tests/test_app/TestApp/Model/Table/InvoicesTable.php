@@ -13,6 +13,7 @@ class InvoicesTable extends Table
             'contain' => [
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
+                'InvoiceTypes',
                 'Tags'
             ],
             'remove' => [
