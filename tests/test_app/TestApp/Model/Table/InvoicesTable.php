@@ -11,6 +11,7 @@ class InvoicesTable extends Table
 
         $this->addBehavior('Duplicatable.Duplicatable', [
             'contain' => [
+                'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
                 'InvoiceTypes',
@@ -27,12 +28,16 @@ class InvoicesTable extends Table
                 'items.invoice_item_properties.name' => 'NEW '
             ],
             'append' => [
-                'name' => ' - copy'
+                'name' => ' - copy',
+                'invoice_data.data' => ' - copy'
             ]
         ]);
 
+        $this->hasOne('InvoiceData');
+
         $this->belongsTo('InvoiceTypes');
         $this->belongsToMany('Tags');
+
         $this->hasMany('InvoiceItems', [
             'className' => 'TestApp\Model\Table\InvoiceItemsTable',
             'propertyName' => 'items'

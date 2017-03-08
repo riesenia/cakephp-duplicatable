@@ -18,6 +18,7 @@ class DuplicatableBehaviorTest extends TestCase
     public $fixtures = [
         'plugin.Duplicatable.invoice_types',
         'plugin.Duplicatable.invoices',
+        'plugin.Duplicatable.invoice_data',
         'plugin.Duplicatable.invoice_items',
         'plugin.Duplicatable.invoice_item_properties',
         'plugin.Duplicatable.invoice_item_variations',
@@ -64,6 +65,7 @@ class DuplicatableBehaviorTest extends TestCase
 
         $invoice = $this->Invoices->get($result->id, [
             'contain' => [
+                'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
                 'Tags'
@@ -75,6 +77,11 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals('Contact name', $invoice->contact_name);
         $this->assertEquals(1, $invoice->copied);
         $this->assertEquals(null, $invoice->created);
+
+        // has one
+        $this->assertEquals(3, $invoice->invoice_data->id);
+        $this->assertEquals($result->id, $invoice->invoice_data->id);
+        $this->assertEquals('Data for invoice 1 - copy', $invoice->invoice_data->data);
 
         // has many
         $this->assertEquals('Item 1', $invoice->items[0]->name);
@@ -108,6 +115,7 @@ class DuplicatableBehaviorTest extends TestCase
         // check original entity
         $original = $this->Invoices->get(1, [
             'contain' => [
+                'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
                 'Tags'
