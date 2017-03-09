@@ -3,6 +3,7 @@ namespace Duplicatable\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
@@ -214,8 +215,25 @@ class DuplicatableBehavior extends Behavior
     {
         $assocName = array_shift($parts);
         $prop = $object->{$assocName}->property();
+        $associated = $entity->{$prop};
 
-        foreach ($entity->{$prop} as $e) {
+        if ($object->{$assocName} instanceof BelongsTo) {
+            return;
+        }
+
+        if ($associated instanceof EntityInterface) {
+            if (!empty($parts)) {
+                $this->_drillDownAssoc($associated, $object->{$assocName}, $parts);
+            }
+
+            if (!$associated->isNew()) {
+                $this->_modifyEntity($associated, $object->{$assocName});
+            }
+
+            return;
+        }
+
+        foreach ($associated as $e) {
             if (!empty($parts)) {
                 $this->_drillDownAssoc($e, $object->{$assocName}, $parts);
             }
@@ -240,6 +258,12 @@ class DuplicatableBehavior extends Behavior
         $prop = array_shift($parts);
         if (empty($parts)) {
             $this->_doAction($action, $entity, $prop, $value);
+
+            return;
+        }
+
+        if ($entity->{$prop} instanceof EntityInterface) {
+            $this->_drillDownEntity($action, $entity->{$prop}, $parts, $value);
 
             return;
         }

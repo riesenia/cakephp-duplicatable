@@ -3,11 +3,12 @@ namespace Duplicatable\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 
-class InvoiceTypesFixture extends TestFixture
+class InvoiceDataFixture extends TestFixture
 {
     public $fields = [
         'id' => ['type' => 'integer'],
-        'name' => ['type' => 'string', 'default' => null, 'null' => true],
+        'invoice_id' => ['type' => 'integer'],
+        'data' => ['type' => 'string', 'default' => null, 'null' => true],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id']]
         ]
@@ -16,11 +17,13 @@ class InvoiceTypesFixture extends TestFixture
     public $records = [
         [
             'id' => 1,
-            'name' => 'Type 1'
+            'invoice_id' => 1,
+            'data' => 'Data for invoice 1'
         ],
         [
             'id' => 2,
-            'name' => 'Type 2'
-        ]
+            'invoice_id' => 2,
+            'data' => 'Data for invoice 2'
+        ],
     ];
 }
