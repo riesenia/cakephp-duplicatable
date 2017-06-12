@@ -60,7 +60,6 @@ class DuplicatableBehavior extends Behavior
     public function duplicateEntity($id)
     {
         $query = $this->_table;
-
         foreach ($this->_getFinder() as $finder) {
             $query = $query->find($finder);
         }
@@ -115,7 +114,7 @@ class DuplicatableBehavior extends Behavior
             $finders[] = 'translations';
         }
 
-        if (count($finders) == 1 && $finders[0] == 'all') {
+        if ($finders === ['all']) {
             return $finders;
         }
 
@@ -128,7 +127,6 @@ class DuplicatableBehavior extends Behavior
         }
 
         $tmp = [];
-
         foreach ($finders as $finder) {
             if ($object->hasFinder($finder)) {
                 $tmp[] = $finder;
@@ -136,7 +134,7 @@ class DuplicatableBehavior extends Behavior
         }
 
         if (empty($tmp)) {
-            $finders = ['all'];
+            $tmp = ['all'];
         }
 
         $finders = array_unique($tmp);
@@ -154,7 +152,7 @@ class DuplicatableBehavior extends Behavior
         $contain = [];
         foreach ($this->config('contain') as $assocPath) {
             $finders = $this->_getFinder($assocPath);
-            if (count($finders) == 1 && $finders[0] == 'all') {
+            if ($finders === ['all']) {
                 $contain[] = $assocPath;
             } else {
                 $contain[$assocPath] = function ($query) use ($finders) {
