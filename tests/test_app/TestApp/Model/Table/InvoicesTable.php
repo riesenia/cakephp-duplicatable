@@ -9,6 +9,8 @@ class InvoicesTable extends Table
     {
         parent::initialize($config);
 
+        $this->addBehavior('Translate', ['fields' => ['name']]);
+
         $this->addBehavior('Duplicatable.Duplicatable', [
             'contain' => [
                 'InvoiceData',
