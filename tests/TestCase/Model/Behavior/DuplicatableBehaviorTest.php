@@ -133,4 +133,34 @@ class DuplicatableBehaviorTest extends TestCase
         // belongs to many
         $this->assertEquals(2, count($original->tags));
     }
+
+    public function testWithTranslation()
+    {
+        $this->Invoices->removeBehavior('Duplicatable');
+        $this->Invoices->addBehavior('Duplicatable.Duplicatable', [
+            'finder' => 'translations',
+            'append' => [
+                'name' => ' - copy'
+            ]
+        ]);
+
+        $result = $this->Invoices->duplicate(1);
+
+        $invoice = $this->Invoices->find('translations')
+            ->where(['id' => $result->id])
+            ->first();
+
+        $this->assertNotEmpty($invoice->_translations);
+        $this->assertEquals('Invoice name - es - copy', $invoice->_translations['es']['name']);
+
+        $I18n = TableRegistry::get('I18n');
+        $records = $I18n->find()
+            ->where([
+                'locale' => 'es',
+                'model' => 'Invoices',
+            ])
+            ->all();
+
+        $this->assertEquals(2, $records->count());
+    }
 }

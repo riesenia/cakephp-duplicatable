@@ -287,6 +287,12 @@ class DuplicatableBehavior extends Behavior
         switch ($action) {
             case 'remove':
                 $entity->unsetProperty($prop);
+
+                if (!empty($entity->_translations)) {
+                    foreach ($entity->_translations as &$translation) {
+                        $translation->unset($entity->unsetProperty($prop));
+                    }
+                }
                 break;
 
             case 'set':
@@ -294,14 +300,32 @@ class DuplicatableBehavior extends Behavior
                     $value = $value($entity);
                 }
                 $entity->set($prop, $value);
+
+                if (!empty($entity->_translations)) {
+                    foreach ($entity->_translations as &$translation) {
+                        $translation->set($prop, $value);
+                    }
+                }
                 break;
 
             case 'prepend':
                 $entity->set($prop, $value . $entity->get($prop));
+
+                if (!empty($entity->_translations)) {
+                    foreach ($entity->_translations as &$translation) {
+                        $translation->set($prop, $value . $translation->get($prop));
+                    }
+                }
                 break;
 
             case 'append':
                 $entity->set($prop, $entity->get($prop) . $value);
+
+                if (!empty($entity->_translations)) {
+                    foreach ($entity->_translations as &$translation) {
+                        $translation->set($prop, $translation->get($prop) . $value);
+                    }
+                }
                 break;
         }
     }
