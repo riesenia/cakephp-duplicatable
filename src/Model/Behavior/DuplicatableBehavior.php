@@ -288,7 +288,7 @@ class DuplicatableBehavior extends Behavior
 
                 if (!empty($entity->_translations)) {
                     foreach ($entity->_translations as &$translation) {
-                        $translation->unset($entity->unsetProperty($prop));
+                        $translation->unsetProperty($prop);
                     }
                 }
                 break;
