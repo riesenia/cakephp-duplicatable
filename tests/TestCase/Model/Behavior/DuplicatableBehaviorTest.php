@@ -139,19 +139,30 @@ class DuplicatableBehaviorTest extends TestCase
         $this->Invoices->removeBehavior('Duplicatable');
         $this->Invoices->addBehavior('Duplicatable.Duplicatable', [
             'finder' => 'translations',
+            'contain' => ['InvoiceItems.InvoiceItemProperties'],
             'append' => [
                 'name' => ' - copy'
-            ]
+            ],
+            'prepend' => [
+                'items.invoice_item_properties.name' => 'NEW '
+            ],
         ]);
 
         $result = $this->Invoices->duplicate(1);
 
         $invoice = $this->Invoices->find('translations')
             ->where(['id' => $result->id])
+            ->contain(['InvoiceItems.InvoiceItemProperties' => function ($q) {
+                return $q->find('translations');
+            }])
             ->first();
 
         $this->assertNotEmpty($invoice->_translations);
         $this->assertEquals('Invoice name - es - copy', $invoice->_translations['es']['name']);
+        $this->assertEquals(
+            'NEW Property 1 - es',
+            $invoice->items[0]->invoice_item_properties[0]->_translations['es']['name']
+        );
 
         $I18n = TableRegistry::get('I18n');
         $records = $I18n->find()
@@ -160,7 +171,14 @@ class DuplicatableBehaviorTest extends TestCase
                 'model' => 'Invoices',
             ])
             ->all();
+        $this->assertEquals(2, $records->count());
 
+        $records = $I18n->find()
+            ->where([
+                'locale' => 'es',
+                'model' => 'InvoiceItemProperties',
+            ])
+            ->all();
         $this->assertEquals(2, $records->count());
     }
 }

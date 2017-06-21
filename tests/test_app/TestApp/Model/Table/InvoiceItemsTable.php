@@ -9,7 +9,9 @@ class InvoiceItemsTable extends Table
     {
         parent::initialize($config);
 
-        $this->hasMany('InvoiceItemProperties');
+        $this->hasMany('InvoiceItemProperties', [
+            'className' => 'TestApp\Model\Table\InvoiceItemPropertiesTable',
+        ]);
         $this->hasMany('InvoiceItemVariations');
     }
 }
