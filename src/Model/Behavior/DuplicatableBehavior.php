@@ -311,7 +311,9 @@ class DuplicatableBehavior extends Behavior
 
                 if (!empty($entity->_translations)) {
                     foreach ($entity->_translations as &$translation) {
-                        $translation->set($prop, $value . $translation->get($prop));
+                        if (!is_null($translation->get($prop))) {
+                            $translation->set($prop, $value . $translation->get($prop));
+                        }
                     }
                 }
                 break;
@@ -321,7 +323,9 @@ class DuplicatableBehavior extends Behavior
 
                 if (!empty($entity->_translations)) {
                     foreach ($entity->_translations as &$translation) {
-                        $translation->set($prop, $translation->get($prop) . $value);
+                        if (!is_null($translation->get($prop))) {
+                            $translation->set($prop, $translation->get($prop) . $value);
+                        }
                     }
                 }
                 break;
