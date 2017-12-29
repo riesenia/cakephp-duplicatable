@@ -215,7 +215,7 @@ class DuplicatableBehavior extends Behavior
         $prop = $object->{$assocName}->property();
         $associated = $entity->{$prop};
 
-        if ($object->{$assocName} instanceof BelongsTo) {
+        if (empty($associated) || $object->{$assocName} instanceof BelongsTo) {
             return;
         }
 
