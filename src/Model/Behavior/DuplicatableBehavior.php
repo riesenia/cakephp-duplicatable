@@ -230,7 +230,7 @@ class DuplicatableBehavior extends Behavior
 
             return;
         }
-        
+
         foreach ($associated as $e) {
             if (!empty($parts)) {
                 $this->_drillDownAssoc($e, $object->{$assocName}, $parts);
