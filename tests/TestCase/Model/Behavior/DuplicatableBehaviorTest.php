@@ -1,7 +1,6 @@
 <?php
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
