@@ -68,7 +68,7 @@ class DuplicatableBehavior extends Behavior
             $query = $query->contain($contain);
         }
 
-        $entity = $query->where([$this->_table->getAlias() . '.id' => $id])->firstOrFail();
+        $entity = $query->where([$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $id])->firstOrFail();
 
         // process entity
         foreach ($this->getConfig('contain') as $contain) {
