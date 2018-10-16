@@ -188,7 +188,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->Invoices->addBehavior('Duplicatable.Duplicatable', [
             'set' => [
                 'copied' => true,
-                'name' => 'Example Invoice - copy',
+                'name' => 'mail',
                 'contact_name' => function (EntityInterface $entity) {
                     return strrev($entity->get('contact_name'));
                 }
@@ -198,7 +198,7 @@ class DuplicatableBehaviorTest extends TestCase
         $result = $this->Invoices->duplicate(1);
         $invoice = $this->Invoices->get($result->id);
 
-        $this->assertEquals('Example Invoice - copy', $invoice->name);
+        $this->assertEquals('mail', $invoice->name);
         $this->assertEquals('eman tcatnoC', $invoice->contact_name);
         $this->assertEquals(1, $invoice->copied);
     }
