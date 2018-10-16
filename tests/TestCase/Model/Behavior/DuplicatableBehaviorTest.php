@@ -1,6 +1,7 @@
 <?php
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -179,5 +180,26 @@ class DuplicatableBehaviorTest extends TestCase
             ])
             ->all();
         $this->assertEquals(2, $records->count());
+    }
+
+    public function testDuplicateWithSetters()
+    {
+        $this->Invoices->removeBehavior('Duplicatable');
+        $this->Invoices->addBehavior('Duplicatable.Duplicatable', [
+            'set' => [
+                'copied' => true,
+                'name' => 'mail',
+                'contact_name' => function (EntityInterface $entity) {
+                    return strrev($entity->get('contact_name'));
+                }
+            ]
+        ]);
+
+        $result = $this->Invoices->duplicate(1);
+        $invoice = $this->Invoices->get($result->id);
+
+        $this->assertEquals('mail', $invoice->name);
+        $this->assertEquals('eman tcatnoC', $invoice->contact_name);
+        $this->assertEquals(1, $invoice->copied);
     }
 }

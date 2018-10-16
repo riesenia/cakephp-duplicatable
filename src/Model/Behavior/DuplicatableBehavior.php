@@ -292,7 +292,7 @@ class DuplicatableBehavior extends Behavior
                 break;
 
             case 'set':
-                if (is_callable($value)) {
+                if (!is_string($value) && is_callable($value)) {
                     $value = $value($entity);
                 }
                 $entity->set($prop, $value);
