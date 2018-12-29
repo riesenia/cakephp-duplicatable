@@ -35,7 +35,8 @@ class DuplicatableBehavior extends Behavior
         'set' => [],
         'prepend' => [],
         'append' => [],
-        'saveOptions' => []
+        'saveOptions' => [],
+        'preserveKeyFromCompositeKey' => ''
     ];
 
     /**
@@ -179,12 +180,14 @@ class DuplicatableBehavior extends Behavior
         if ($object instanceof BelongsToMany) {
             unset($entity->_joinData);
         } else {
+
             // unset primary key
-            unset($entity->{$object->getPrimaryKey()});
+            $this->removePrimaryKey($entity, $object);
 
             // unset foreign key
             if ($object instanceof Association) {
-                unset($entity->{$object->getPrimaryKey()});
+                // unset primary key
+                $this->removePrimaryKey($entity, $object);
             }
         }
 
@@ -327,6 +330,36 @@ class DuplicatableBehavior extends Behavior
                     }
                 }
                 break;
+        }
+    }
+
+    /**
+     * Removes the primary key from the entity being duplicated.  If the entity has a composite key, you must
+     * specify which field we wish to preserve
+     *
+     * @param EntityInterface $entity
+     * @param $object
+     * @throws \Exception
+     */
+    protected function removePrimaryKey(EntityInterface $entity, $object)
+    {
+        if (is_array($object->getPrimaryKey())) {
+
+            $compositeKey = $object->getPrimaryKey();
+
+            $keyToPreserve = $this->getConfig('preserveKeyFromCompositeKey');
+
+            if(!in_array($keyToPreserve, $compositeKey)){
+                throw new \Exception('You must specify which key to preserve when duplicating composite keys');
+            }
+
+            foreach ($compositeKey as $pkField){
+                if ($pkField != $keyToPreserve) {
+                    unset($entity->{$pkField});
+                }
+            }
+        } else {
+            unset($entity->{$object->getPrimaryKey()});
         }
     }
 }
