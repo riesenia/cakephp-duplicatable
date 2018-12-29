@@ -173,6 +173,7 @@ class DuplicatableBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @return void
+     * @throws \Exception
      */
     protected function _modifyEntity(EntityInterface $entity, $object)
     {
