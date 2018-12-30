@@ -348,7 +348,6 @@ class DuplicatableBehavior extends Behavior
      */
     protected function removePrimaryKey(EntityInterface $entity, $object)
     {
-
         $primaryKey = $object->getPrimaryKey();
 
         if (!is_array($primaryKey)) {
