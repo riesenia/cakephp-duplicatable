@@ -45,6 +45,7 @@ class DuplicatableBehavior extends Behavior
      *
      * @param int|string $id Id of entity to duplicate.
      * @return \Cake\Datasource\EntityInterface New entity or false on failure
+     * @throws \Exception
      */
     public function duplicate($id)
     {
