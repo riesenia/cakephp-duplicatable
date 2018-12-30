@@ -19,6 +19,7 @@ use Cake\ORM\Behavior;
  * - set: fields and their default value
  * - prepend: fields and text to prepend
  * - append: fields and text to append
+ * - keysToPreserve: only used in the case of composite keys.  Provide any keys which the behavior should preserve and not unset
  */
 class DuplicatableBehavior extends Behavior
 {
@@ -36,7 +37,7 @@ class DuplicatableBehavior extends Behavior
         'prepend' => [],
         'append' => [],
         'saveOptions' => [],
-        'preserveKeyFromCompositeKey' => ''
+        'keysToPreserve' => []
     ];
 
     /**
@@ -55,6 +56,7 @@ class DuplicatableBehavior extends Behavior
      *
      * @param int|string $id Id of entity to duplicate.
      * @return \Cake\Datasource\EntityInterface
+     * @throws \Exception
      */
     public function duplicateEntity($id)
     {
@@ -210,6 +212,7 @@ class DuplicatableBehavior extends Behavior
      * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @param array $parts Related properties chain.
      * @return void
+     * @throws \Exception
      */
     protected function _drillDownAssoc(EntityInterface $entity, $object, array $parts)
     {
@@ -336,7 +339,7 @@ class DuplicatableBehavior extends Behavior
 
     /**
      * Removes the primary key from the entity being duplicated.  If the entity has a composite key, you must
-     * specify which field we wish to preserve
+     * specify which field(s) we wish to preserve
      *
      * @param EntityInterface $entity
      * @param $object
@@ -344,23 +347,26 @@ class DuplicatableBehavior extends Behavior
      */
     protected function removePrimaryKey(EntityInterface $entity, $object)
     {
-        if (is_array($object->getPrimaryKey())) {
 
-            $compositeKey = $object->getPrimaryKey();
+        $primaryKey = $object->getPrimaryKey();
 
-            $keyToPreserve = $this->getConfig('preserveKeyFromCompositeKey');
+        if (!is_array($primaryKey)) {
+            unset($entity->{$primaryKey});
+            return;
+        }
 
-            if(!in_array($keyToPreserve, $compositeKey)){
-                throw new \Exception('You must specify which key to preserve when duplicating composite keys');
+        $keysToPreserve = $this->getConfig('keysToPreserve');
+
+        $commonKeys = array_intersect($keysToPreserve, $primaryKey);
+
+        if (empty($keysToPreserve) || empty($commonKeys)) {
+            throw new \Exception('You must specify which key to preserve when duplicating composite keys');
+        }
+
+        foreach ($primaryKey as $pkField) {
+            if (!in_array($pkField, $keysToPreserve)) {
+                unset($entity->{$pkField});
             }
-
-            foreach ($compositeKey as $pkField){
-                if ($pkField != $keyToPreserve) {
-                    unset($entity->{$pkField});
-                }
-            }
-        } else {
-            unset($entity->{$object->getPrimaryKey()});
         }
     }
 }
