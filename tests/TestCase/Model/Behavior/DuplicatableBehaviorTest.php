@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
@@ -32,13 +34,15 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->Invoices = TableRegistry::get('Invoices', [
-            'className' => 'TestApp\Model\Table\InvoicesTable'
+            'className' => 'TestApp\Model\Table\InvoicesTable',
         ]);
+
+        $this->Tags = TableRegistry::get('Tags');
     }
 
     /**
@@ -46,7 +50,7 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Invoices);
 
@@ -68,8 +72,8 @@ class DuplicatableBehaviorTest extends TestCase
                 'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
-                'Tags'
-            ]
+                'Tags',
+            ],
         ]);
 
         // entity
@@ -110,7 +114,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals('Tag 2', $invoice->tags[1]->name);
 
         // check that tags are not duplicated
-        $this->assertEquals(2, $this->Invoices->Tags->find()->count());
+        $this->assertEquals(2, $this->Tags->find()->count());
 
         // check original entity
         $original = $this->Invoices->get(1, [
@@ -118,8 +122,8 @@ class DuplicatableBehaviorTest extends TestCase
                 'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
-                'Tags'
-            ]
+                'Tags',
+            ],
         ]);
 
         // has many
@@ -141,10 +145,10 @@ class DuplicatableBehaviorTest extends TestCase
             'finder' => 'translations',
             'contain' => ['InvoiceItems.InvoiceItemProperties'],
             'append' => [
-                'name' => ' - copy'
+                'name' => ' - copy',
             ],
             'prepend' => [
-                'items.invoice_item_properties.name' => 'NEW '
+                'items.invoice_item_properties.name' => 'NEW ',
             ],
         ]);
 
@@ -191,8 +195,8 @@ class DuplicatableBehaviorTest extends TestCase
                 'name' => 'mail',
                 'contact_name' => function (EntityInterface $entity) {
                     return strrev($entity->get('contact_name'));
-                }
-            ]
+                },
+            ],
         ]);
 
         $result = $this->Invoices->duplicate(1);

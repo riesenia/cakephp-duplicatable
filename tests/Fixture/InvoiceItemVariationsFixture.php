@@ -10,30 +10,30 @@ class InvoiceItemVariationsFixture extends TestFixture
         'invoice_item_id' => ['type' => 'integer', 'default' => null, 'null' => true],
         'name' => ['type' => 'string', 'default' => null, 'null' => true],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id']]
-        ]
+            'primary' => ['type' => 'primary', 'columns' => ['id']],
+        ],
     ];
 
     public $records = [
         [
             'id' => 1,
             'invoice_item_id' => 1,
-            'name' => 'Variation 1'
+            'name' => 'Variation 1',
         ],
         [
             'id' => 2,
             'invoice_item_id' => 2,
-            'name' => 'Variation 2'
+            'name' => 'Variation 2',
         ],
         [
             'id' => 3,
             'invoice_item_id' => 2,
-            'name' => 'Variation 3'
+            'name' => 'Variation 3',
         ],
         [
             'id' => 4,
             'invoice_item_id' => 3,
-            'name' => 'Variation 4'
-        ]
+            'name' => 'Variation 4',
+        ],
     ];
 }

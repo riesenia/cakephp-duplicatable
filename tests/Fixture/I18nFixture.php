@@ -9,7 +9,6 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class I18nFixture extends TestFixture
 {
-
     /**
      * Table name
      *
@@ -56,7 +55,7 @@ class I18nFixture extends TestFixture
             'model' => 'Invoices',
             'foreign_key' => 1,
             'field' => 'name',
-            'content' => 'Invoice name - es'
+            'content' => 'Invoice name - es',
         ],
         [
             'id' => 2,
@@ -64,7 +63,7 @@ class I18nFixture extends TestFixture
             'model' => 'InvoiceItemProperties',
             'foreign_key' => 1,
             'field' => 'name',
-            'content' => 'Property 1 - es'
+            'content' => 'Property 1 - es',
         ],
     ];
 }
