@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Duplicatable\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
@@ -35,7 +37,7 @@ class DuplicatableBehavior extends Behavior
         'set' => [],
         'prepend' => [],
         'append' => [],
-        'saveOptions' => []
+        'saveOptions' => [],
     ];
 
     /**
@@ -46,7 +48,10 @@ class DuplicatableBehavior extends Behavior
      */
     public function duplicate($id)
     {
-        return $this->_table->save($this->duplicateEntity($id), $this->getConfig('saveOptions') + ['associated' => $this->getConfig('contain')]);
+        return $this->_table->save(
+            $this->duplicateEntity($id),
+            $this->getConfig('saveOptions') + ['associated' => $this->getConfig('contain')]
+        );
     }
 
     /**
@@ -68,7 +73,9 @@ class DuplicatableBehavior extends Behavior
             $query = $query->contain($contain);
         }
 
-        $entity = $query->where([$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $id])->firstOrFail();
+        $entity = $query
+            ->where([$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $id])
+            ->firstOrFail();
 
         // process entity
         foreach ($this->getConfig('contain') as $contain) {
