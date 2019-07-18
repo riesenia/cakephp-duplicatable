@@ -16,15 +16,15 @@ class DuplicatableBehaviorTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.Duplicatable.invoice_types',
-        'plugin.Duplicatable.invoices',
-        'plugin.Duplicatable.invoice_data',
-        'plugin.Duplicatable.invoice_items',
-        'plugin.Duplicatable.invoice_item_properties',
-        'plugin.Duplicatable.invoice_item_variations',
-        'plugin.Duplicatable.invoices_tags',
-        'plugin.Duplicatable.i18n',
-        'plugin.Duplicatable.tags'
+        'plugin.Duplicatable.InvoiceTypes',
+        'plugin.Duplicatable.Invoices',
+        'plugin.Duplicatable.InvoiceData',
+        'plugin.Duplicatable.InvoiceItems',
+        'plugin.Duplicatable.InvoiceItemProperties',
+        'plugin.Duplicatable.InvoiceItemVariations',
+        'plugin.Duplicatable.InvoicesTags',
+        'plugin.Duplicatable.I18n',
+        'plugin.Duplicatable.Tags',
     ];
 
     /**
@@ -32,7 +32,7 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -46,7 +46,7 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Invoices);
 
