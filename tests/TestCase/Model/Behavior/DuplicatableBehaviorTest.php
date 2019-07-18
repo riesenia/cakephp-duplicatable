@@ -41,6 +41,8 @@ class DuplicatableBehaviorTest extends TestCase
         $this->Invoices = TableRegistry::get('Invoices', [
             'className' => 'TestApp\Model\Table\InvoicesTable',
         ]);
+
+        $this->Tags = TableRegistry::get('Tags');
     }
 
     /**
@@ -112,7 +114,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals('Tag 2', $invoice->tags[1]->name);
 
         // check that tags are not duplicated
-        $this->assertEquals(2, $this->Invoices->Tags->find()->count());
+        $this->assertEquals(2, $this->Tags->find()->count());
 
         // check original entity
         $original = $this->Invoices->get(1, [
