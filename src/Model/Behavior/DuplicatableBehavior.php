@@ -19,6 +19,7 @@ use Cake\ORM\Behavior;
  * - set: fields and their default value
  * - prepend: fields and text to prepend
  * - append: fields and text to append
+ * - keysToPreserve: only used in the case of composite keys.  Provide any keys which the behavior should preserve and not unset
  */
 class DuplicatableBehavior extends Behavior
 {
@@ -35,7 +36,8 @@ class DuplicatableBehavior extends Behavior
         'set' => [],
         'prepend' => [],
         'append' => [],
-        'saveOptions' => []
+        'saveOptions' => [],
+        'keysToPreserve' => []
     ];
 
     /**
@@ -43,6 +45,7 @@ class DuplicatableBehavior extends Behavior
      *
      * @param int|string $id Id of entity to duplicate.
      * @return \Cake\Datasource\EntityInterface New entity or false on failure
+     * @throws \Exception
      */
     public function duplicate($id)
     {
@@ -54,6 +57,7 @@ class DuplicatableBehavior extends Behavior
      *
      * @param int|string $id Id of entity to duplicate.
      * @return \Cake\Datasource\EntityInterface
+     * @throws \Exception
      */
     public function duplicateEntity($id)
     {
@@ -172,6 +176,7 @@ class DuplicatableBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @return void
+     * @throws \Exception
      */
     protected function _modifyEntity(EntityInterface $entity, $object)
     {
@@ -179,12 +184,14 @@ class DuplicatableBehavior extends Behavior
         if ($object instanceof BelongsToMany) {
             unset($entity->_joinData);
         } else {
+
             // unset primary key
-            unset($entity->{$object->getPrimaryKey()});
+            $this->removePrimaryKey($entity, $object);
 
             // unset foreign key
             if ($object instanceof Association) {
-                unset($entity->{$object->getPrimaryKey()});
+                // unset primary key
+                $this->removePrimaryKey($entity, $object);
             }
         }
 
@@ -206,6 +213,7 @@ class DuplicatableBehavior extends Behavior
      * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @param array $parts Related properties chain.
      * @return void
+     * @throws \Exception
      */
     protected function _drillDownAssoc(EntityInterface $entity, $object, array $parts)
     {
@@ -327,6 +335,38 @@ class DuplicatableBehavior extends Behavior
                     }
                 }
                 break;
+        }
+    }
+
+    /**
+     * Removes the primary key from the entity being duplicated.  If the entity has a composite key, you must
+     * specify which field(s) we wish to preserve
+     *
+     * @param EntityInterface $entity
+     * @param $object
+     * @throws \Exception
+     */
+    protected function removePrimaryKey(EntityInterface $entity, $object)
+    {
+        $primaryKey = $object->getPrimaryKey();
+
+        if (!is_array($primaryKey)) {
+            unset($entity->{$primaryKey});
+            return;
+        }
+
+        $keysToPreserve = $this->getConfig('keysToPreserve');
+
+        $commonKeys = array_intersect($keysToPreserve, $primaryKey);
+
+        if (empty($keysToPreserve) || empty($commonKeys)) {
+            throw new \Exception('You must specify which key to preserve when duplicating composite keys');
+        }
+
+        foreach ($primaryKey as $pkField) {
+            if (!in_array($pkField, $keysToPreserve)) {
+                unset($entity->{$pkField});
+            }
         }
     }
 }
