@@ -40,6 +40,7 @@ class InvoicesTable extends Table
 
         $this->belongsTo('InvoiceTypes');
         $this->belongsToMany('Tags', [
+            'joinTable' => 'invoices_tags',
             'through' => 'InvoicesTags',
         ]);
 

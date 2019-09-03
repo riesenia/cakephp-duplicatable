@@ -132,8 +132,6 @@ class DuplicatableBehaviorTest extends TestCase
 
         // belongs to many
         $this->assertEquals(2, count($original->tags));
-        $this->assertEquals(false, isset($original->tags[0]->_joinData));
-        $this->assertEquals(false, isset($original->tags[1]->_joinData));
     }
 
     public function testWithTranslation()
@@ -213,13 +211,28 @@ class DuplicatableBehaviorTest extends TestCase
             'contain' => [
                 'Tags',
             ],
+            'preserveJoinData' => false,
+        ]);
+
+        $duplicated = $this->Invoices->duplicateEntity(1);
+
+        $this->assertEquals(false, isset($duplicated->tags[0]->_joinData));
+        $this->assertEquals(false, isset($duplicated->tags[1]->_joinData));
+
+        $this->Invoices->removeBehavior('Duplicatable');
+
+        $this->Invoices->addBehavior('Duplicatable.Duplicatable', [
+            'contain' => [
+                'Tags',
+            ],
             'preserveJoinData' => true,
         ]);
 
-        $result = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($result->id);
+        $duplicated = $this->Invoices->duplicateEntity(1);
 
-        $this->assertEquals(true, isset($invoice->_joinData));
-        $this->assertEquals(true, $invoice->_joinData->is_preserved);
+        $this->assertEquals(true, isset($duplicated->tags[0]->_joinData));
+        $this->assertEquals(true, isset($duplicated->tags[1]->_joinData));
+        $this->assertEquals(true, $duplicated->tags[0]->_joinData->is_preserved);
+        $this->assertEquals(true, $duplicated->tags[1]->_joinData->is_preserved);
     }
 }
