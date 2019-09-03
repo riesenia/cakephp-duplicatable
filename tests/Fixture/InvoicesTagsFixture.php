@@ -9,6 +9,7 @@ class InvoicesTagsFixture extends TestFixture
         'id' => ['type' => 'integer'],
         'invoice_id' => ['type' => 'integer', 'default' => null, 'null' => true],
         'tag_id' => ['type' => 'integer', 'default' => null, 'null' => true],
+        'is_preserved' => ['type' => 'boolean', 'default' => true, 'null' => false],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id']]
         ]
@@ -18,17 +19,20 @@ class InvoicesTagsFixture extends TestFixture
         [
             'id' => 1,
             'invoice_id' => 1,
-            'tag_id' => 1
+            'tag_id' => 1,
+            'is_preserved' => true,
         ],
         [
             'id' => 2,
             'invoice_id' => 1,
-            'tag_id' => 2
+            'tag_id' => 2,
+            'is_preserved' => true,
         ],
         [
             'id' => 3,
             'invoice_id' => 2,
-            'tag_id' => 2
+            'tag_id' => 2,
+            'is_preserved' => true,
         ]
     ];
 }
