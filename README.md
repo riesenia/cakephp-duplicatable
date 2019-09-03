@@ -45,6 +45,7 @@ This behavior provides a `duplicateEntity` method for the table. It mainly acts 
 * *prepend* - fields that will have value prepended by provided text
 * *append* - fields that will have value appended by provided text
 * *saveOptions* - options for save on primary table
+* *preserveJoinData* - if `_joinData` property in `BelongsToMany` relations should be preserved - defaults to `false` due to tricky nature of this association 
 
 ## Examples
 
