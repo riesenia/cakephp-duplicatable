@@ -19,6 +19,7 @@ use Cake\ORM\Behavior;
  * - set: fields and their default value
  * - prepend: fields and text to prepend
  * - append: fields and text to append
+ * - preserveJoinData: if _joinData on BelongsToMany relations should be preserved
  */
 class DuplicatableBehavior extends Behavior
 {
@@ -35,7 +36,8 @@ class DuplicatableBehavior extends Behavior
         'set' => [],
         'prepend' => [],
         'append' => [],
-        'saveOptions' => []
+        'saveOptions' => [],
+        'preserveJoinData' => false,
     ];
 
     /**
@@ -176,7 +178,7 @@ class DuplicatableBehavior extends Behavior
     protected function _modifyEntity(EntityInterface $entity, $object)
     {
         // belongs to many is tricky
-        if ($object instanceof BelongsToMany) {
+        if ($object instanceof BelongsToMany && ! $this->getConfig('preserveJoinData')) {
             unset($entity->_joinData);
         } else {
             // unset primary key
