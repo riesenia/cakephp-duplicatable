@@ -213,28 +213,20 @@ class DuplicatableBehaviorTest extends TestCase
             'contain' => [
                 'Tags',
             ],
-            'preserveJoinData' => false,
-        ]);
-
-        $duplicated = $this->Invoices->duplicateEntity(1);
-
-        $this->assertEquals(false, isset($duplicated->tags[0]->_joinData));
-        $this->assertEquals(false, isset($duplicated->tags[1]->_joinData));
-
-        $this->Invoices->removeBehavior('Duplicatable');
-
-        $this->Invoices->addBehavior('Duplicatable.Duplicatable', [
-            'contain' => [
-                'Tags',
-            ],
             'preserveJoinData' => true,
         ]);
 
-        $duplicated = $this->Invoices->duplicateEntity(1);
+        $result = $this->Invoices->duplicate(1);
+        $invoice = $this->Invoices->get($result->id, [
+            'contain' => [
+                'Tags',
+            ]
+        ]);
 
-        $this->assertEquals(true, isset($duplicated->tags[0]->_joinData));
-        $this->assertEquals(true, isset($duplicated->tags[1]->_joinData));
-        $this->assertEquals(true, $duplicated->tags[0]->_joinData->is_preserved);
-        $this->assertEquals(true, $duplicated->tags[1]->_joinData->is_preserved);
+        $this->assertEquals(true, $invoice->tags[0]->_joinData->is_preserved);
+        $this->assertEquals(true, $invoice->tags[1]->_joinData->is_preserved);
+
+        // check that tags are not duplicated
+        $this->assertEquals(2, $this->Invoices->Tags->find()->count());
     }
 }
