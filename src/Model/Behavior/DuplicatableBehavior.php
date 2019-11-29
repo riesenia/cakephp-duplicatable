@@ -180,7 +180,7 @@ class DuplicatableBehavior extends Behavior
         // belongs to many is tricky
         if ($object instanceof BelongsToMany && !$this->getConfig('preserveJoinData')) {
             unset($entity->_joinData);
-        } else if (!$object instanceof BelongsToMany) {
+        } elseif (!$object instanceof BelongsToMany) {
             // unset primary key
             unset($entity->{$object->getPrimaryKey()});
 
