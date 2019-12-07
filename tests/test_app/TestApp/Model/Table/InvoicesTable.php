@@ -35,12 +35,16 @@ class InvoicesTable extends Table
                 'name' => ' - copy',
                 'invoice_data.data' => ' - copy',
             ],
+            'preserveJoinData' => false,
         ]);
 
         $this->hasOne('InvoiceData');
 
         $this->belongsTo('InvoiceTypes');
-        $this->belongsToMany('Tags');
+        $this->belongsToMany('Tags', [
+            'joinTable' => 'invoices_tags',
+            'through' => 'InvoicesTags',
+        ]);
 
         $this->hasMany('InvoiceItems', [
             'className' => 'TestApp\Model\Table\InvoiceItemsTable',

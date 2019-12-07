@@ -21,6 +21,7 @@ use Cake\ORM\Behavior;
  * - set: fields and their default value
  * - prepend: fields and text to prepend
  * - append: fields and text to append
+ * - preserveJoinData: if _joinData on BelongsToMany relations should be preserved
  */
 class DuplicatableBehavior extends Behavior
 {
@@ -38,6 +39,7 @@ class DuplicatableBehavior extends Behavior
         'prepend' => [],
         'append' => [],
         'saveOptions' => [],
+        'preserveJoinData' => false,
     ];
 
     /**
@@ -183,9 +185,9 @@ class DuplicatableBehavior extends Behavior
     protected function _modifyEntity(EntityInterface $entity, $object): void
     {
         // belongs to many is tricky
-        if ($object instanceof BelongsToMany) {
+        if ($object instanceof BelongsToMany && !$this->getConfig('preserveJoinData')) {
             unset($entity->_joinData);
-        } else {
+        } elseif (!$object instanceof BelongsToMany) {
             // unset primary key
             unset($entity->{$object->getPrimaryKey()});
 
@@ -198,12 +200,12 @@ class DuplicatableBehavior extends Behavior
         // set translations as new
         if (!empty($entity->_translations)) {
             foreach ($entity->_translations as $translation) {
-                $translation->isNew(true);
+                $translation->setNew(true);
             }
         }
 
         // set as new
-        $entity->isNew(true);
+        $entity->setNew(true);
     }
 
     /**
@@ -289,11 +291,11 @@ class DuplicatableBehavior extends Behavior
     {
         switch ($action) {
             case 'remove':
-                $entity->unsetProperty($prop);
+                $entity->unset($prop);
 
                 if (!empty($entity->_translations)) {
                     foreach ($entity->_translations as &$translation) {
-                        $translation->unsetProperty($prop);
+                        $translation->unset($prop);
                     }
                 }
                 break;
