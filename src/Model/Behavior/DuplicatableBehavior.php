@@ -178,9 +178,9 @@ class DuplicatableBehavior extends Behavior
     protected function _modifyEntity(EntityInterface $entity, $object)
     {
         // belongs to many is tricky
-        if ($object instanceof BelongsToMany && ! $this->getConfig('preserveJoinData')) {
+        if ($object instanceof BelongsToMany && !$this->getConfig('preserveJoinData')) {
             unset($entity->_joinData);
-        } else {
+        } elseif (!$object instanceof BelongsToMany) {
             // unset primary key
             unset($entity->{$object->getPrimaryKey()});
 
