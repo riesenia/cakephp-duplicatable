@@ -224,7 +224,7 @@ class DuplicatableBehaviorTest extends TestCase
         $invoice = $this->Invoices->get($result->id, [
             'contain' => [
                 'Tags',
-            ]
+            ],
         ]);
 
         $this->assertEquals(true, $invoice->tags[0]->_joinData->is_preserved);
