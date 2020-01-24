@@ -33,6 +33,14 @@ class InvoicesFixture extends TestFixture
             'contact_name' => 'Contact name 2',
             'copied' => 0,
             'created' => '2015-05-17 03:20:54'
-        ]
+        ],
+        [
+            'id' => 3,
+            'invoice_type_id' => 1,
+            'name' => 'Invoice with removed optionally null associations',
+            'contact_name' => 'Contact name 3',
+            'copied' => 0,
+            'created' => '2015-05-17 03:20:54'
+        ],
     ];
 }

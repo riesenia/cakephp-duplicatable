@@ -266,8 +266,10 @@ class DuplicatableBehavior extends Behavior
             return;
         }
 
-        foreach ($entity->{$prop} as $key => $e) {
-            $this->_drillDownEntity($action, $e, $parts, $value);
+        if (is_iterable($entity->{$prop})) {
+            foreach ($entity->{$prop} as $key => $e) {
+                $this->_drillDownEntity($action, $e, $parts, $value);
+            }
         }
     }
 
