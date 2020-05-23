@@ -11,8 +11,8 @@ class InvoicesTagsFixture extends TestFixture
         'tag_id' => ['type' => 'integer', 'default' => null, 'null' => true],
         'is_preserved' => ['type' => 'boolean', 'null' => true],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id']]
-        ]
+            'primary' => ['type' => 'primary', 'columns' => ['id']],
+        ],
     ];
 
     public $records = [
@@ -33,6 +33,6 @@ class InvoicesTagsFixture extends TestFixture
             'invoice_id' => 2,
             'tag_id' => 2,
             'is_preserved' => true,
-        ]
+        ],
     ];
 }

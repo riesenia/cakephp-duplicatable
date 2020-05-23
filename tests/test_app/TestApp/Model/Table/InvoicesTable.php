@@ -17,21 +17,21 @@ class InvoicesTable extends Table
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
                 'InvoiceTypes',
-                'Tags'
+                'Tags',
             ],
             'remove' => [
                 'created',
-                'items.created'
+                'items.created',
             ],
             'set' => [
-                'copied' => true
+                'copied' => true,
             ],
             'prepend' => [
-                'items.invoice_item_properties.name' => 'NEW '
+                'items.invoice_item_properties.name' => 'NEW ',
             ],
             'append' => [
                 'name' => ' - copy',
-                'invoice_data.data' => ' - copy'
+                'invoice_data.data' => ' - copy',
             ],
             'preserveJoinData' => false,
         ]);
@@ -46,7 +46,7 @@ class InvoicesTable extends Table
 
         $this->hasMany('InvoiceItems', [
             'className' => 'TestApp\Model\Table\InvoiceItemsTable',
-            'propertyName' => 'items'
+            'propertyName' => 'items',
         ]);
     }
 }
