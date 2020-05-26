@@ -39,7 +39,7 @@ class DuplicatableBehaviorTest extends TestCase
         parent::setUp();
 
         $this->Invoices = TableRegistry::get('Invoices', [
-            'className' => 'TestApp\Model\Table\InvoicesTable'
+            'className' => 'TestApp\Model\Table\InvoicesTable',
         ]);
     }
 
@@ -70,8 +70,8 @@ class DuplicatableBehaviorTest extends TestCase
                 'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
-                'Tags'
-            ]
+                'Tags',
+            ],
         ]);
 
         // entity
@@ -121,8 +121,8 @@ class DuplicatableBehaviorTest extends TestCase
                 'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
-                'Tags'
-            ]
+                'Tags',
+            ],
         ]);
 
         // has many
@@ -144,10 +144,10 @@ class DuplicatableBehaviorTest extends TestCase
             'finder' => 'translations',
             'contain' => ['InvoiceItems.InvoiceItemProperties'],
             'append' => [
-                'name' => ' - copy'
+                'name' => ' - copy',
             ],
             'prepend' => [
-                'items.invoice_item_properties.name' => 'NEW '
+                'items.invoice_item_properties.name' => 'NEW ',
             ],
         ]);
 
@@ -194,8 +194,8 @@ class DuplicatableBehaviorTest extends TestCase
                 'name' => 'mail',
                 'contact_name' => function (EntityInterface $entity) {
                     return strrev($entity->get('contact_name'));
-                }
-            ]
+                },
+            ],
         ]);
 
         $result = $this->Invoices->duplicate(1);
@@ -221,7 +221,7 @@ class DuplicatableBehaviorTest extends TestCase
         $invoice = $this->Invoices->get($result->id, [
             'contain' => [
                 'Tags',
-            ]
+            ],
         ]);
 
         $this->assertEquals(true, $invoice->tags[0]->_joinData->is_preserved);

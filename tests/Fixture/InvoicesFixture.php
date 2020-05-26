@@ -13,8 +13,8 @@ class InvoicesFixture extends TestFixture
         'copied' => ['type' => 'boolean', 'null' => false],
         'created' => ['type' => 'datetime', 'default' => null, 'null' => true],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id']]
-        ]
+            'primary' => ['type' => 'primary', 'columns' => ['id']],
+        ],
     ];
 
     public $records = [
@@ -24,7 +24,7 @@ class InvoicesFixture extends TestFixture
             'name' => 'Invoice name',
             'contact_name' => 'Contact name',
             'copied' => 0,
-            'created' => '2015-03-17 01:20:23'
+            'created' => '2015-03-17 01:20:23',
         ],
         [
             'id' => 2,
