@@ -267,7 +267,7 @@ class DuplicatableBehavior extends Behavior
         }
 
         if (is_array($entity->{$prop}) || $entity->{$prop} instanceof \Traversable) {
-            foreach ($entity->{$prop} as $key => $e) {
+            foreach ($entity->{$prop} as $e) {
                 $this->_drillDownEntity($action, $e, $parts, $value);
             }
         }
