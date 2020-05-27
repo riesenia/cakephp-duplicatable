@@ -75,6 +75,7 @@ class DuplicatableBehavior extends Behavior
             $query = $query->contain($contain);
         }
 
+        /** @var \Cake\Datasource\EntityInterface $entity */
         $entity = $query
             ->where([$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $id])
             ->firstOrFail();
