@@ -241,7 +241,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->Invoices->behaviors()->get('Duplicatable')->setConfig('remove', ['invoice_data.data']);
 
         $result = $this->Invoices->duplicate(3);
-        $this->assertInstanceOf('Cake\Datasource\EntityInterface', $result);
+        $this->assertInstanceOf(EntityInterface::class, $result);
 
         $this->assertNotEquals(3, $result->get('id'));
         $this->assertEmpty($result->get('invoice_data'));
