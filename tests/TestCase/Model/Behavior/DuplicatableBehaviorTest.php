@@ -9,6 +9,8 @@ use Cake\TestSuite\TestCase;
 
 /**
  * DuplicatableBehavior Test Case
+ *
+ * @property \TestApp\Model\Table\InvoicesTable $Invoices
  */
 class DuplicatableBehaviorTest extends TestCase
 {
@@ -84,7 +86,6 @@ class DuplicatableBehaviorTest extends TestCase
 
         // has one
         $this->assertEquals(3, $invoice->invoice_data->id);
-        $this->assertEquals($result->id, $invoice->invoice_data->id);
         $this->assertEquals('Data for invoice 1 - copy', $invoice->invoice_data->data);
 
         // has many
@@ -232,5 +233,21 @@ class DuplicatableBehaviorTest extends TestCase
 
         // check that tags are not duplicated
         $this->assertEquals(2, $this->Invoices->Tags->find()->count());
+    }
+
+    /**
+     * Test that an entity with optionally null association can have fields removed when being duplicated
+     *
+     * @return void
+     */
+    public function testDuplicateWithRemoveOnNullAssociations()
+    {
+        $this->Invoices->behaviors()->get('Duplicatable')->setConfig('remove', ['invoice_data.data']);
+
+        $result = $this->Invoices->duplicate(3);
+        $this->assertInstanceOf(EntityInterface::class, $result);
+
+        $this->assertNotEquals(3, $result->get('id'));
+        $this->assertEmpty($result->get('invoice_data'));
     }
 }

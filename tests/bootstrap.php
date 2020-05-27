@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 /*
  * Test suite bootstrap
- *
  */
-
 use Cake\Core\Configure;
 
 /*

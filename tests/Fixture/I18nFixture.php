@@ -5,7 +5,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * I18nFixture
- *
  */
 class I18nFixture extends TestFixture
 {
