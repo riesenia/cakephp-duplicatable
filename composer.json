@@ -10,6 +10,9 @@
             "email": "segy@riesenia.com"
         }
     ],
+    "require": {
+        "cakephp/orm": "^4.0"
+    },
     "require-dev": {
         "cakephp/cakephp": "^4.0",
         "phpunit/phpunit": "^8.5.0"
