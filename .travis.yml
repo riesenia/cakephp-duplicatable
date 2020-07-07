@@ -2,7 +2,6 @@ language: php
 
 php:
   - 7.2
-  - 7.3
   - 7.4
 
 env:
@@ -36,7 +35,7 @@ script:
   - if [[ $DEFAULT == 1 && $TRAVIS_PHP_VERSION = 7.2 ]]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
   - if [[ $DEFAULT == 1 && $TRAVIS_PHP_VERSION != 7.2 ]]; then vendor/bin/phpunit; fi
 
-  - if [[ $STATIC_ANALYSIS == 1 ]]; then vendor/bin/psalm.phar --show-info=false; fi
+  - if [[ $STATIC_ANALYSIS == 1 ]]; then vendor/bin/psalm.phar; fi
 
   - if [[ $PHPCS == 1 ]]; then vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi
 
