@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Duplicatable\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
@@ -44,11 +46,14 @@ class DuplicatableBehavior extends Behavior
      * Duplicate record.
      *
      * @param int|string $id Id of entity to duplicate.
-     * @return \Cake\Datasource\EntityInterface New entity or false on failure
+     * @return \Cake\Datasource\EntityInterface|false New entity or false on failure
      */
     public function duplicate($id)
     {
-        return $this->_table->save($this->duplicateEntity($id), $this->getConfig('saveOptions') + ['associated' => $this->getConfig('contain')]);
+        return $this->_table->save(
+            $this->duplicateEntity($id),
+            $this->getConfig('saveOptions') + ['associated' => $this->getConfig('contain')]
+        );
     }
 
     /**
@@ -57,7 +62,7 @@ class DuplicatableBehavior extends Behavior
      * @param int|string $id Id of entity to duplicate.
      * @return \Cake\Datasource\EntityInterface
      */
-    public function duplicateEntity($id)
+    public function duplicateEntity($id): EntityInterface
     {
         $query = $this->_table;
         foreach ($this->_getFinder() as $finder) {
@@ -70,7 +75,10 @@ class DuplicatableBehavior extends Behavior
             $query = $query->contain($contain);
         }
 
-        $entity = $query->where([$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $id])->firstOrFail();
+        /** @var \Cake\Datasource\EntityInterface $entity */
+        $entity = $query
+            ->where([$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $id])
+            ->firstOrFail();
 
         // process entity
         foreach ($this->getConfig('contain') as $contain) {
@@ -99,9 +107,9 @@ class DuplicatableBehavior extends Behavior
      * Return finder to use for fetching entities.
      *
      * @param string|null $assocPath Dot separated association path. E.g. Invoices.InvoiceItems
-     * @return string
+     * @return array
      */
-    protected function _getFinder($assocPath = null)
+    protected function _getFinder(?string $assocPath = null): array
     {
         $finders = $this->getConfig('finder');
 
@@ -147,7 +155,7 @@ class DuplicatableBehavior extends Behavior
      *
      * @return array
      */
-    protected function _getContain()
+    protected function _getContain(): array
     {
         $contain = [];
         foreach ($this->getConfig('contain') as $assocPath) {
@@ -175,7 +183,7 @@ class DuplicatableBehavior extends Behavior
      * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @return void
      */
-    protected function _modifyEntity(EntityInterface $entity, $object)
+    protected function _modifyEntity(EntityInterface $entity, $object): void
     {
         // belongs to many is tricky
         if ($object instanceof BelongsToMany && !$this->getConfig('preserveJoinData')) {
@@ -193,12 +201,12 @@ class DuplicatableBehavior extends Behavior
         // set translations as new
         if (!empty($entity->_translations)) {
             foreach ($entity->_translations as $translation) {
-                $translation->isNew(true);
+                $translation->setNew(true);
             }
         }
 
         // set as new
-        $entity->isNew(true);
+        $entity->setNew(true);
     }
 
     /**
@@ -209,7 +217,7 @@ class DuplicatableBehavior extends Behavior
      * @param array $parts Related properties chain.
      * @return void
      */
-    protected function _drillDownAssoc(EntityInterface $entity, $object, array $parts)
+    protected function _drillDownAssoc(EntityInterface $entity, $object, array $parts): void
     {
         $assocName = array_shift($parts);
         $prop = $object->{$assocName}->getProperty();
@@ -251,7 +259,7 @@ class DuplicatableBehavior extends Behavior
      * @param mixed $value Value to set or use for modification.
      * @return void
      */
-    protected function _drillDownEntity($action, EntityInterface $entity, array $parts, $value = null)
+    protected function _drillDownEntity(string $action, EntityInterface $entity, array $parts, $value = null): void
     {
         $prop = array_shift($parts);
         if (empty($parts)) {
@@ -266,7 +274,7 @@ class DuplicatableBehavior extends Behavior
             return;
         }
 
-        if (is_array($entity->{$prop}) || $entity->{$prop} instanceof \Traversable) {
+        if (is_iterable($entity->{$prop})) {
             foreach ($entity->{$prop} as $e) {
                 $this->_drillDownEntity($action, $e, $parts, $value);
             }
@@ -282,15 +290,15 @@ class DuplicatableBehavior extends Behavior
      * @param mixed $value Value to set or use for modification.
      * @return void
      */
-    protected function _doAction($action, EntityInterface $entity, $prop, $value = null)
+    protected function _doAction(string $action, EntityInterface $entity, $prop, $value = null): void
     {
         switch ($action) {
             case 'remove':
-                $entity->unsetProperty($prop);
+                $entity->unset($prop);
 
                 if (!empty($entity->_translations)) {
                     foreach ($entity->_translations as &$translation) {
-                        $translation->unsetProperty($prop);
+                        $translation->unset($prop);
                     }
                 }
                 break;

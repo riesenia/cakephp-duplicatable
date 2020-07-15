@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
@@ -34,13 +36,15 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->Invoices = TableRegistry::get('Invoices', [
             'className' => 'TestApp\Model\Table\InvoicesTable',
         ]);
+
+        $this->Tags = TableRegistry::get('Tags');
     }
 
     /**
@@ -48,7 +52,7 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Invoices);
 
@@ -113,7 +117,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals(null, $invoice->tags[1]->_joinData->is_preserved);
 
         // check that tags are not duplicated
-        $this->assertEquals(2, $this->Invoices->Tags->find()->count());
+        $this->assertEquals(2, $this->Tags->find()->count());
 
         // check original entity
         $original = $this->Invoices->get(1, [
