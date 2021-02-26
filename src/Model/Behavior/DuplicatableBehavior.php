@@ -99,7 +99,7 @@ class DuplicatableBehavior extends Behavior
      * Return finder to use for fetching entities.
      *
      * @param string|null $assocPath Dot separated association path. E.g. Invoices.InvoiceItems
-     * @return string
+     * @return array
      */
     protected function _getFinder($assocPath = null)
     {
