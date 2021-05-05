@@ -22,12 +22,12 @@ class I18nFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'locale' => ['type' => 'string', 'length' => 6, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
-        'model' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
-        'foreign_key' => ['type' => 'integer', 'length' => 10, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
-        'field' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
-        'content' => ['type' => 'text', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'id' => ['type' => 'integer'],
+        'locale' => ['type' => 'string', 'length' => 6, 'default' => null],
+        'model' => ['type' => 'string', 'length' => 255, 'default' => null],
+        'foreign_key' => ['type' => 'integer', 'length' => 10, 'default' => null],
+        'field' => ['type' => 'string', 'length' => 255, 'default' => null],
+        'content' => ['type' => 'text', 'default' => null],
         '_indexes' => [
             'model' => ['type' => 'index', 'columns' => ['model', 'foreign_key', 'field'], 'length' => []],
         ],
@@ -45,7 +45,6 @@ class I18nFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
             'locale' => 'es',
             'model' => 'Invoices',
             'foreign_key' => 1,
@@ -53,7 +52,6 @@ class I18nFixture extends TestFixture
             'content' => 'Invoice name - es',
         ],
         [
-            'id' => 2,
             'locale' => 'es',
             'model' => 'InvoiceItemProperties',
             'foreign_key' => 1,
