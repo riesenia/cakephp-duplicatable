@@ -4,7 +4,6 @@ declare(strict_types=1);
 /*
  * Test suite bootstrap
  */
-use Cake\Core\Configure;
 
 /*
  * This function is used to find the location of CakePHP whether CakePHP
@@ -25,8 +24,3 @@ $root = $findRoot(__FILE__);
 unset($findRoot);
 chdir($root);
 require $root . '/vendor/cakephp/cakephp/tests/bootstrap.php';
-
-define('PLUGIN_ROOT', $root . DS);
-define('PLUGIN_TESTS', $root . DS . 'tests' . DS);
-
-Configure::write('App.paths.plugins', [PLUGIN_TESTS . 'test_app' . DS . 'plugins' . DS]);
