@@ -17,10 +17,10 @@ Using composer
 composer require riesenia/cakephp-duplicatable
 ```
 
-Load plugin in *config/bootstrap.php*
+Load plugin using
 
-```php
-Plugin::load('Duplicatable');
+```sh
+bin/cake plugin load Duplicatable
 ```
 
 ## Usage
@@ -45,14 +45,14 @@ This behavior provides a `duplicateEntity` method for the table. It mainly acts 
 * *prepend* - fields that will have value prepended by provided text
 * *append* - fields that will have value appended by provided text
 * *saveOptions* - options for save on primary table
-* *preserveJoinData* - if `_joinData` property in `BelongsToMany` relations should be preserved - defaults to `false` due to tricky nature of this association 
+* *preserveJoinData* - if `_joinData` property in `BelongsToMany` relations should be preserved - defaults to `false` due to tricky nature of this association
 
 ## Examples
 
 ```php
 class InvoicesTable extends Table
 {
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
