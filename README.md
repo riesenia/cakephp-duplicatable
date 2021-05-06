@@ -1,13 +1,12 @@
 # Duplicatable behavior for CakePHP
 
-[![Build Status](https://img.shields.io/travis/riesenia/cakephp-duplicatable/master.svg?style=flat-square)](https://travis-ci.org/riesenia/cakephp-duplicatable)
+[![Build Status](https://img.shields.io/github/workflow/status/riesenia/cakephp-duplicatable/CI/master?style=flat-square)](https://github.com/riesenia/cakephp-duplicatable/actions?query=workflow%3ACI+branch%3Amaster)
 [![Coverage Status](https://img.shields.io/codecov/c/github/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://codecov.io/github/riesenia/cakephp-duplicatable)
 [![Latest Version](https://img.shields.io/packagist/v/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
 [![Total Downloads](https://img.shields.io/packagist/dt/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-This plugin is for CakePHP 3.x and contains behavior that handles duplicating entities
-including related data.
+This plugin contains a behavior that handles duplicating entities including related data.
 
 ## Installation
 
@@ -17,10 +16,10 @@ Using composer
 composer require riesenia/cakephp-duplicatable
 ```
 
-Load plugin in *config/bootstrap.php*
+Load plugin using
 
-```php
-Plugin::load('Duplicatable');
+```sh
+bin/cake plugin load Duplicatable
 ```
 
 ## Usage
@@ -45,14 +44,14 @@ This behavior provides a `duplicateEntity` method for the table. It mainly acts 
 * *prepend* - fields that will have value prepended by provided text
 * *append* - fields that will have value appended by provided text
 * *saveOptions* - options for save on primary table
-* *preserveJoinData* - if `_joinData` property in `BelongsToMany` relations should be preserved - defaults to `false` due to tricky nature of this association 
+* *preserveJoinData* - if `_joinData` property in `BelongsToMany` relations should be preserved - defaults to `false` due to tricky nature of this association
 
 ## Examples
 
 ```php
 class InvoicesTable extends Table
 {
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 

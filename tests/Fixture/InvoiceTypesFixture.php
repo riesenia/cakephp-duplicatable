@@ -15,11 +15,9 @@ class InvoiceTypesFixture extends TestFixture
 
     public $records = [
         [
-            'id' => 1,
             'name' => 'Type 1',
         ],
         [
-            'id' => 2,
             'name' => 'Type 2',
         ],
     ];

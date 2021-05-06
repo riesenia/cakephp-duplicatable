@@ -19,7 +19,7 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.Duplicatable.InvoiceTypes',
         'plugin.Duplicatable.Invoices',
         'plugin.Duplicatable.InvoiceData',
@@ -40,23 +40,11 @@ class DuplicatableBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->Invoices = TableRegistry::get('Invoices', [
+        $this->Invoices = $this->getTableLocator()->get('Invoices', [
             'className' => 'TestApp\Model\Table\InvoicesTable',
         ]);
 
-        $this->Tags = TableRegistry::get('Tags');
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->Invoices);
-
-        parent::tearDown();
+        $this->Tags = $this->getTableLocator()->get('Tags');
     }
 
     /**

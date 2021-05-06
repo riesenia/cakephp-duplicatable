@@ -16,22 +16,18 @@ class InvoiceItemPropertiesFixture extends TestFixture
 
     public $records = [
         [
-            'id' => 1,
             'invoice_item_id' => 1,
             'name' => 'Property 1',
         ],
         [
-            'id' => 2,
             'invoice_item_id' => 1,
             'name' => 'Property 2',
         ],
         [
-            'id' => 3,
             'invoice_item_id' => 2,
             'name' => 'Property 3',
         ],
         [
-            'id' => 4,
             'invoice_item_id' => 3,
             'name' => 'Property 4',
         ],
