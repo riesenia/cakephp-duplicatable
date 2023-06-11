@@ -5,7 +5,7 @@ namespace Duplicatable;
 
 use Cake\Core\BasePlugin;
 
-class Plugin extends BasePlugin
+class DuplicatablePlugin extends BasePlugin
 {
     /**
      * Do bootstrapping or not
