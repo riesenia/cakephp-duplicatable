@@ -10,6 +10,7 @@ declare(strict_types=1);
  * has been installed as a dependency of the plugin, or the plugin is itself
  * installed as a dependency of an application.
  */
+
 $findRoot = function ($root) {
     do {
         $lastRoot = $root;

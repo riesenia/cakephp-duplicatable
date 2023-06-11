@@ -5,16 +5,7 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class InvoiceItemVariationsFixture extends TestFixture
 {
-    public $fields = [
-        'id' => ['type' => 'integer'],
-        'invoice_item_id' => ['type' => 'integer', 'default' => null, 'null' => true],
-        'name' => ['type' => 'string', 'default' => null, 'null' => true],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id']],
-        ],
-    ];
-
-    public $records = [
+    public array $records = [
         [
             'invoice_item_id' => 1,
             'name' => 'Variation 1',

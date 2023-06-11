@@ -3,4 +3,5 @@ composer.phar
 composer.lock
 .DS_Store
 Thumbs.db
-.phpunit.result.cache
+.phpunit.cache
+/tools
