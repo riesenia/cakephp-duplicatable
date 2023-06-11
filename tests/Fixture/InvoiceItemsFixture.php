@@ -5,18 +5,7 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class InvoiceItemsFixture extends TestFixture
 {
-    public $fields = [
-        'id' => ['type' => 'integer'],
-        'invoice_id' => ['type' => 'integer', 'default' => null, 'null' => true],
-        'name' => ['type' => 'string', 'default' => null, 'null' => true],
-        'amount' => ['type' => 'float', 'default' => null, 'null' => true],
-        'created' => ['type' => 'datetime', 'default' => null, 'null' => true],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id']],
-        ],
-    ];
-
-    public $records = [
+    public array $records = [
         [
             'invoice_id' => 1,
             'name' => 'Item 1',

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -19,7 +18,7 @@ class DuplicatableBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.Duplicatable.InvoiceTypes',
         'plugin.Duplicatable.Invoices',
         'plugin.Duplicatable.InvoiceData',
@@ -57,14 +56,15 @@ class DuplicatableBehaviorTest extends TestCase
         $result = $this->Invoices->duplicate(1);
         $this->assertInstanceOf('Cake\Datasource\EntityInterface', $result);
 
-        $invoice = $this->Invoices->get($result->id, [
-            'contain' => [
+        $invoice = $this->Invoices->get(
+            $result->id,
+            contain: [
                 'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
                 'Tags',
             ],
-        ]);
+        );
 
         // entity
         $this->assertEquals('Invoice name - copy', $invoice->name);
@@ -108,14 +108,15 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals(2, $this->Tags->find()->count());
 
         // check original entity
-        $original = $this->Invoices->get(1, [
-            'contain' => [
+        $original = $this->Invoices->get(
+            1,
+            contain: [
                 'InvoiceData',
                 'InvoiceItems.InvoiceItemProperties',
                 'InvoiceItems.InvoiceItemVariations',
                 'Tags',
             ],
-        ]);
+        );
 
         // has many
         $this->assertEquals('Property 1', $original->items[0]->invoice_item_properties[0]->name);
@@ -159,7 +160,7 @@ class DuplicatableBehaviorTest extends TestCase
             $invoice->items[0]->invoice_item_properties[0]->_translations['es']['name']
         );
 
-        $I18n = TableRegistry::get('I18n');
+        $I18n = $this->getTableLocator()->get('I18n');
         $records = $I18n->find()
             ->where([
                 'locale' => 'es',
@@ -210,11 +211,12 @@ class DuplicatableBehaviorTest extends TestCase
         ]);
 
         $result = $this->Invoices->duplicate(1);
-        $invoice = $this->Invoices->get($result->id, [
-            'contain' => [
+        $invoice = $this->Invoices->get(
+            $result->id,
+            contain: [
                 'Tags',
             ],
-        ]);
+        );
 
         $this->assertEquals(true, $invoice->tags[0]->_joinData->is_preserved);
         $this->assertEquals(true, $invoice->tags[1]->_joinData->is_preserved);

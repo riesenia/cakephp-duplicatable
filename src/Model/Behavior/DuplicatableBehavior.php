@@ -8,6 +8,7 @@ use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Behavior;
+use Cake\ORM\Table;
 
 /**
  * Behavior for duplicating entities (including related entities)
@@ -28,9 +29,9 @@ class DuplicatableBehavior extends Behavior
     /**
      * Default options
      *
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'finder' => 'all',
         'contain' => [],
         'includeTranslations' => false,
@@ -45,10 +46,10 @@ class DuplicatableBehavior extends Behavior
     /**
      * Duplicate record.
      *
-     * @param int|string $id Id of entity to duplicate.
+     * @param string|int $id Id of entity to duplicate.
      * @return \Cake\Datasource\EntityInterface|false New entity or false on failure
      */
-    public function duplicate($id)
+    public function duplicate(int|string $id): EntityInterface|false
     {
         return $this->_table->save(
             $this->duplicateEntity($id),
@@ -59,10 +60,10 @@ class DuplicatableBehavior extends Behavior
     /**
      * Creates duplicate Entity for given record id without saving it.
      *
-     * @param int|string $id Id of entity to duplicate.
+     * @param string|int $id Id of entity to duplicate.
      * @return \Cake\Datasource\EntityInterface
      */
-    public function duplicateEntity($id): EntityInterface
+    public function duplicateEntity(int|string $id): EntityInterface
     {
         $query = $this->_table;
         foreach ($this->_getFinder() as $finder) {
@@ -145,9 +146,7 @@ class DuplicatableBehavior extends Behavior
             $tmp = ['all'];
         }
 
-        $finders = array_unique($tmp);
-
-        return $finders;
+        return array_unique($tmp);
     }
 
     /**
@@ -183,7 +182,7 @@ class DuplicatableBehavior extends Behavior
      * @param \Cake\ORM\Table|\Cake\ORM\Association $object Table or association instance.
      * @return void
      */
-    protected function _modifyEntity(EntityInterface $entity, $object): void
+    protected function _modifyEntity(EntityInterface $entity, Table|Association $object): void
     {
         // belongs to many is tricky
         if ($object instanceof BelongsToMany && !$this->getConfig('preserveJoinData')) {
@@ -217,7 +216,7 @@ class DuplicatableBehavior extends Behavior
      * @param array $parts Related properties chain.
      * @return void
      */
-    protected function _drillDownAssoc(EntityInterface $entity, $object, array $parts): void
+    protected function _drillDownAssoc(EntityInterface $entity, Table|Association $object, array $parts): void
     {
         $assocName = array_shift($parts);
         $prop = $object->{$assocName}->getProperty();
@@ -256,11 +255,15 @@ class DuplicatableBehavior extends Behavior
      * @param string $action Action to perform.
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param array $parts Related properties chain.
-     * @param mixed $value Value to set or use for modification.
+     * @param mixed|null $value Value to set or use for modification.
      * @return void
      */
-    protected function _drillDownEntity(string $action, EntityInterface $entity, array $parts, $value = null): void
-    {
+    protected function _drillDownEntity(
+        string $action,
+        EntityInterface $entity,
+        array $parts,
+        mixed $value = null
+    ): void {
         $prop = array_shift($parts);
         if (empty($parts)) {
             $this->_doAction($action, $entity, $prop, $value);
@@ -287,10 +290,10 @@ class DuplicatableBehavior extends Behavior
      * @param string $action Action to perform.
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param string $prop Property name.
-     * @param mixed $value Value to set or use for modification.
+     * @param mixed|null $value Value to set or use for modification.
      * @return void
      */
-    protected function _doAction(string $action, EntityInterface $entity, $prop, $value = null): void
+    protected function _doAction(string $action, EntityInterface $entity, string $prop, mixed $value = null): void
     {
         switch ($action) {
             case 'remove':
