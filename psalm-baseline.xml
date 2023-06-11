@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.10.0@a5effd2d2dddd1a7ea7a0f6a051ce63ff979e356">
+<files psalm-version="5.12.0@f90118cdeacd0088e7215e64c0c99ceca819e176">
   <file src="src/Model/Behavior/DuplicatableBehavior.php">
     <NoInterfaceProperties>
       <code><![CDATA[$entity->_joinData]]></code>
@@ -9,5 +9,8 @@
       <code><![CDATA[$entity->_translations]]></code>
       <code><![CDATA[$entity->_translations]]></code>
     </NoInterfaceProperties>
+    <PossiblyInvalidOperand>
+      <code><![CDATA[$this->_table->getPrimaryKey()]]></code>
+    </PossiblyInvalidOperand>
   </file>
 </files>
