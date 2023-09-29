@@ -13,37 +13,14 @@ class I18nFixture extends TestFixture
      *
      * @var string
      */
-    public $table = 'i18n';
-
-    /**
-     * Fields
-     *
-     * @var array
-     */
-    // @codingStandardsIgnoreStart
-    public $fields = [
-        'id' => ['type' => 'integer'],
-        'locale' => ['type' => 'string', 'length' => 6, 'default' => null],
-        'model' => ['type' => 'string', 'length' => 255, 'default' => null],
-        'foreign_key' => ['type' => 'integer', 'length' => 10, 'default' => null],
-        'field' => ['type' => 'string', 'length' => 255, 'default' => null],
-        'content' => ['type' => 'text', 'default' => null],
-        '_indexes' => [
-            'model' => ['type' => 'index', 'columns' => ['model', 'foreign_key', 'field'], 'length' => []],
-        ],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'locale' => ['type' => 'unique', 'columns' => ['locale', 'model', 'foreign_key', 'field'], 'length' => []],
-        ],
-    ];
-    // @codingStandardsIgnoreEnd
+    public string $table = 'i18n';
 
     /**
      * Records
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'locale' => 'es',
             'model' => 'Invoices',

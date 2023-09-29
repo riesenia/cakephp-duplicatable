@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TestApp\Model\Table;
 
+use Cake\ORM\Behavior\Translate\EavStrategy;
 use Cake\ORM\Table;
 
 class InvoiceItemPropertiesTable extends Table
@@ -11,6 +12,9 @@ class InvoiceItemPropertiesTable extends Table
     {
         parent::initialize($config);
 
-        $this->addBehavior('Translate', ['fields' => ['name']]);
+        $this->addBehavior('Translate', [
+            'fields' => ['name'],
+            'strategyClass' => EavStrategy::class,
+        ]);
     }
 }

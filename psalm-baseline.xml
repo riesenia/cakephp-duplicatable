@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.7.2@d9cae720c1af31db9ba27c2bc1fcf9b0dd092fb0">
+<files psalm-version="5.12.0@f90118cdeacd0088e7215e64c0c99ceca819e176">
   <file src="src/Model/Behavior/DuplicatableBehavior.php">
-    <NoInterfaceProperties occurrences="6">
-      <code>$entity-&gt;_joinData</code>
-      <code>$entity-&gt;_translations</code>
-      <code>$entity-&gt;_translations</code>
-      <code>$entity-&gt;_translations</code>
-      <code>$entity-&gt;_translations</code>
-      <code>$entity-&gt;_translations</code>
+    <NoInterfaceProperties>
+      <code><![CDATA[$entity->_joinData]]></code>
+      <code><![CDATA[$entity->_translations]]></code>
+      <code><![CDATA[$entity->_translations]]></code>
+      <code><![CDATA[$entity->_translations]]></code>
+      <code><![CDATA[$entity->_translations]]></code>
+      <code><![CDATA[$entity->_translations]]></code>
     </NoInterfaceProperties>
-    <PossiblyInvalidArgument occurrences="4">
-      <code>$entity</code>
-      <code>$entity</code>
-      <code>$entity</code>
-      <code>$entity</code>
-    </PossiblyInvalidArgument>
-    <PossiblyInvalidOperand occurrences="1">
-      <code>$this-&gt;_table-&gt;getPrimaryKey()</code>
+    <PossiblyInvalidOperand>
+      <code><![CDATA[$this->_table->getPrimaryKey()]]></code>
     </PossiblyInvalidOperand>
   </file>
 </files>
