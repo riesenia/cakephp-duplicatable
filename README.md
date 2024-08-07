@@ -1,6 +1,6 @@
 # Duplicatable behavior for CakePHP
 
-[![Build Status](https://img.shields.io/github/workflow/status/riesenia/cakephp-duplicatable/CI/master?style=flat-square)](https://github.com/riesenia/cakephp-duplicatable/actions?query=workflow%3ACI+branch%3Amaster)
+[![CI](https://github.com/riesenia/cakephp-duplicatable/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/riesenia/cakephp-duplicatable/actions/workflows/ci.yml)
 [![Coverage Status](https://img.shields.io/codecov/c/github/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://codecov.io/github/riesenia/cakephp-duplicatable)
 [![Latest Version](https://img.shields.io/packagist/v/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
 [![Total Downloads](https://img.shields.io/packagist/dt/riesenia/cakephp-duplicatable.svg?style=flat-square)](https://packagist.org/packages/riesenia/cakephp-duplicatable)
@@ -37,11 +37,11 @@ This behavior provides a `duplicateEntity` method for the table. It mainly acts 
 
 ## Configuration options:
 
-* *finder* - finder to use to get entities. Set to "translations" to fetch and duplicate translations too. Defaults to "all". Possible to set an array for more finders.
+* *finder* - finder to use to get entities. Set it to "translations" to fetch and duplicate translations, too. Defaults to "all". It is possible to set an array for more finders.
 * *contain* - set related entities that will be duplicated
 * *remove* - fields that will be removed from the entity
-* *set* - fields that will be set to provided value or callable to modify the value. If you provide a callable, it will take the entity being cloned as the only argument
-* *prepend* - fields that will have value prepended by provided text
+* *set* - fields that will be set to provide value or callable to modify the value. If you provide a callable, it will take the entity being cloned as the only argument
+* *prepend* - fields that will have value prepended by the provided text
 * *append* - fields that will have value appended by provided text
 * *saveOptions* - options for save on primary table
 * *preserveJoinData* - if `_joinData` property in `BelongsToMany` relations should be preserved - defaults to `false` due to tricky nature of this association
