@@ -9,8 +9,5 @@
       <code><![CDATA[$entity->_translations]]></code>
       <code><![CDATA[$entity->_translations]]></code>
     </NoInterfaceProperties>
-    <PossiblyInvalidOperand>
-      <code><![CDATA[$this->_table->getPrimaryKey()]]></code>
-    </PossiblyInvalidOperand>
   </file>
 </files>

@@ -87,3 +87,13 @@ class InvoicesTable extends Table
 // ... somewhere in the controller
 $this->Invoices->duplicate(4);
 ```
+
+Sometimes you need to access the original entity, e.g. for setting an ancestor/parent id reference.
+In this case you can leverage the `$original` entity being passed in as 2nd argument:
+```php
+            'set' => [
+                'ancestor_id' => function ($entity, $original) {
+                    return $original->id;
+                },
+            ],
+```
