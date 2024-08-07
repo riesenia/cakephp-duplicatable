@@ -240,4 +240,26 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertNotEquals(3, $result->get('id'));
         $this->assertEmpty($result->get('invoice_data'));
     }
+
+    /**
+     * Test that an entity with set using original entity works.
+     *
+     * @return void
+     */
+    public function testDuplicateUsingOriginal()
+    {
+        $config = [
+            'set' => [
+                'ancestor_id' => function (EntityInterface $entity, EntityInterface $original) {
+                    return $original->id;
+                },
+            ],
+        ];
+        $this->Invoices->behaviors()->get('Duplicatable')->setConfig($config);
+
+        $result = $this->Invoices->duplicateEntity(3);
+        $this->assertInstanceOf(EntityInterface::class, $result);
+
+        $this->assertSame(3, $result->get('ancestor_id'));
+    }
 }
