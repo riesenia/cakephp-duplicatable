@@ -84,6 +84,7 @@ class DuplicatableBehavior extends Behavior
         $entity = $query
             ->where([$this->_table->getAlias() . '.' . $primaryKey => $id])
             ->firstOrFail();
+        $original = clone $entity;
 
         // process entity
         foreach ($this->getConfig('contain') as $contain) {
@@ -95,13 +96,13 @@ class DuplicatableBehavior extends Behavior
 
         foreach ($this->getConfig('remove') as $field) {
             $parts = explode('.', $field);
-            $this->_drillDownEntity('remove', $entity, $parts);
+            $this->_drillDownEntity('remove', $entity, $parts, null, $original);
         }
 
         foreach (['set', 'prepend', 'append'] as $action) {
             foreach ($this->getConfig($action) as $field => $value) {
                 $parts = explode('.', $field);
-                $this->_drillDownEntity($action, $entity, $parts, $value);
+                $this->_drillDownEntity($action, $entity, $parts, $value, $original);
             }
         }
 
@@ -260,30 +261,32 @@ class DuplicatableBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param array $parts Related properties chain.
      * @param mixed|null $value Value to set or use for modification.
+     * @param \Cake\Datasource\EntityInterface $original Entity
      * @return void
      */
     protected function _drillDownEntity(
         string $action,
         EntityInterface $entity,
         array $parts,
-        mixed $value = null
+        mixed $value,
+        EntityInterface $original,
     ): void {
         $prop = array_shift($parts);
         if (!$parts) {
-            $this->_doAction($action, $entity, $prop, $value);
+            $this->_doAction($action, $entity, $prop, $value, $original);
 
             return;
         }
 
         if ($entity->{$prop} instanceof EntityInterface) {
-            $this->_drillDownEntity($action, $entity->{$prop}, $parts, $value);
+            $this->_drillDownEntity($action, $entity->{$prop}, $parts, $value, $original);
 
             return;
         }
 
         if (is_iterable($entity->{$prop})) {
             foreach ($entity->{$prop} as $e) {
-                $this->_drillDownEntity($action, $e, $parts, $value);
+                $this->_drillDownEntity($action, $e, $parts, $value, $original);
             }
         }
     }
@@ -294,11 +297,17 @@ class DuplicatableBehavior extends Behavior
      * @param string $action Action to perform.
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param string $prop Property name.
-     * @param mixed|null $value Value to set or use for modification.
+     * @param mixed $value Value to set or use for modification.
+     * @param \Cake\Datasource\EntityInterface $original Entity
      * @return void
      */
-    protected function _doAction(string $action, EntityInterface $entity, string $prop, mixed $value = null): void
-    {
+    protected function _doAction(
+        string $action,
+        EntityInterface $entity,
+        string $prop,
+        mixed $value,
+        EntityInterface $original
+    ): void {
         switch ($action) {
             case 'remove':
                 $entity->unset($prop);
@@ -312,7 +321,7 @@ class DuplicatableBehavior extends Behavior
 
             case 'set':
                 if (!is_string($value) && is_callable($value)) {
-                    $value = $value($entity);
+                    $value = $value($entity, $original);
                 }
                 $entity->set($prop, $value);
 
