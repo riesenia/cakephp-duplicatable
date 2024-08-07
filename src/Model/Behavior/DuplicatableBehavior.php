@@ -65,8 +65,7 @@ class DuplicatableBehavior extends Behavior
      */
     public function duplicateEntity(int|string $id): EntityInterface
     {
-        /** @var \Cake\ORM\Query\SelectQuery $query */
-        $query = $this->_table;
+        $query = $this->_table->find();
         foreach ($this->_getFinder() as $finder) {
             $query = $query->find($finder);
         }
