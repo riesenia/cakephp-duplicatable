@@ -65,6 +65,7 @@ class DuplicatableBehavior extends Behavior
      */
     public function duplicateEntity(int|string $id): EntityInterface
     {
+        /** @var \Cake\ORM\Query\SelectQuery $query */
         $query = $this->_table;
         foreach ($this->_getFinder() as $finder) {
             $query = $query->find($finder);
@@ -72,13 +73,16 @@ class DuplicatableBehavior extends Behavior
 
         $contain = $this->_getContain();
 
-        if (!empty($contain)) {
+        if ($contain) {
             $query = $query->contain($contain);
         }
 
+        /** @var string|int $primaryKey */
+        $primaryKey = $this->_table->getPrimaryKey();
+
         /** @var \Cake\Datasource\EntityInterface $entity */
         $entity = $query
-            ->where([$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $id])
+            ->where([$this->_table->getAlias() . '.' . $primaryKey => $id])
             ->firstOrFail();
 
         // process entity
@@ -142,7 +146,7 @@ class DuplicatableBehavior extends Behavior
             }
         }
 
-        if (empty($tmp)) {
+        if ($tmp === []) {
             $tmp = ['all'];
         }
 
@@ -222,12 +226,12 @@ class DuplicatableBehavior extends Behavior
         $prop = $object->{$assocName}->getProperty();
         $associated = $entity->{$prop};
 
-        if (empty($associated) || $object->{$assocName} instanceof BelongsTo) {
+        if (!$associated || $object->{$assocName} instanceof BelongsTo) {
             return;
         }
 
         if ($associated instanceof EntityInterface) {
-            if (!empty($parts)) {
+            if ($parts) {
                 $this->_drillDownAssoc($associated, $object->{$assocName}, $parts);
             }
 
@@ -239,7 +243,7 @@ class DuplicatableBehavior extends Behavior
         }
 
         foreach ($associated as $e) {
-            if (!empty($parts)) {
+            if ($parts) {
                 $this->_drillDownAssoc($e, $object->{$assocName}, $parts);
             }
 
@@ -265,7 +269,7 @@ class DuplicatableBehavior extends Behavior
         mixed $value = null
     ): void {
         $prop = array_shift($parts);
-        if (empty($parts)) {
+        if (!$parts) {
             $this->_doAction($action, $entity, $prop, $value);
 
             return;
