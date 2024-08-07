@@ -132,9 +132,10 @@ class DuplicatableBehavior extends Behavior
         }
 
         $object = $this->_table;
-        if ($assocPath) {
+        if ($assocPath !== null) {
             $parts = explode('.', $assocPath);
             foreach ($parts as $prop) {
+                /** @var \Cake\ORM\Association $object */
                 $object = $object->{$prop};
             }
         }
@@ -231,17 +232,10 @@ class DuplicatableBehavior extends Behavior
         }
 
         if ($associated instanceof EntityInterface) {
-            if ($parts) {
-                $this->_drillDownAssoc($associated, $object->{$assocName}, $parts);
-            }
-
-            if (!$associated->isNew()) {
-                $this->_modifyEntity($associated, $object->{$assocName});
-            }
-
-            return;
+            $associated = [$associated];
         }
 
+        /** @var array<\Cake\Datasource\EntityInterface> $associated */
         foreach ($associated as $e) {
             if ($parts) {
                 $this->_drillDownAssoc($e, $object->{$assocName}, $parts);

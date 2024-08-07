@@ -13,3 +13,6 @@ trim_trailing_whitespace = true
 
 [*.yml]
 indent_size = 2
+
+[*.neon]
+indent_style = tab
