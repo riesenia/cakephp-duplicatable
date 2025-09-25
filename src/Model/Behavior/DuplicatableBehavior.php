@@ -47,13 +47,14 @@ class DuplicatableBehavior extends Behavior
      * Duplicate record.
      *
      * @param string|int $id Id of entity to duplicate.
+     * @param array $saveOptions Additional save options to pass to save().
      * @return \Cake\Datasource\EntityInterface|false New entity or false on failure
      */
-    public function duplicate(int|string $id): EntityInterface|false
+    public function duplicate(int|string $id, array $saveOptions = []): EntityInterface|false
     {
         return $this->_table->save(
             $this->duplicateEntity($id),
-            $this->getConfig('saveOptions') + ['associated' => $this->getConfig('contain')]
+            $this->getConfig('saveOptions') + $saveOptions + ['associated' => $this->getConfig('contain'), 'duplicated' => true, 'originalId' => $id, 'duplicatedModel' => $this->_table->getAlias()]
         );
     }
 
