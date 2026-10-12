@@ -5,6 +5,11 @@ namespace Duplicatable;
 
 use Cake\Core\BasePlugin;
 
+/**
+ * Duplicatable plugin.
+ *
+ * @api
+ */
 class DuplicatablePlugin extends BasePlugin
 {
     /**

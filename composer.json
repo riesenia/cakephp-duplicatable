@@ -11,12 +11,13 @@
         }
     ],
     "require": {
-        "cakephp/orm": "^5.0"
+        "php": ">=8.5",
+        "cakephp/orm": "^6.0"
     },
     "require-dev": {
-        "cakephp/cakephp-codesniffer": "^5.0",
-        "cakephp/cakephp": "^5.0",
-        "phpunit/phpunit": "^10.1"
+        "cakephp/cakephp-codesniffer": "6.x-dev",
+        "cakephp/cakephp": "^6.0",
+        "phpunit/phpunit": "^13.0"
     },
     "autoload": {
         "psr-4": {
@@ -44,6 +45,8 @@
         "stan-setup": "phive install",
         "test": "phpunit"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
