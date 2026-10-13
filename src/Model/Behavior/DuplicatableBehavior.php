@@ -13,8 +13,6 @@ use Cake\ORM\Table;
 /**
  * Behavior for duplicating entities (including related entities)
  *
- * @api
- *
  * Configurable options:
  * - finder: Finder to use. Defaults to 'all'.
  * - contain: related entities to duplicate
