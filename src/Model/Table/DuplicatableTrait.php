@@ -8,7 +8,7 @@ use Cake\Datasource\EntityInterface;
 /**
  * Provides duplication methods on tables using the Duplicatable behavior.
  *
- * @mixin \Cake\ORM\Table
+ * @require-extends \Cake\ORM\Table
  */
 trait DuplicatableTrait
 {
