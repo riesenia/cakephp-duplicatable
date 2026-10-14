@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Duplicatable\Test\TestCase\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use TestApp\Model\Table\InvoicesTable;
 
 /**
  * DuplicatableBehavior Test Case
@@ -13,6 +15,10 @@ use Cake\TestSuite\TestCase;
  */
 class DuplicatableBehaviorTest extends TestCase
 {
+    protected InvoicesTable $Invoices;
+
+    protected Table $Tags;
+
     /**
      * Fixtures
      *
@@ -157,7 +163,7 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertEquals('Invoice name - es - copy', $invoice->_translations['es']['name']);
         $this->assertEquals(
             'NEW Property 1 - es',
-            $invoice->items[0]->invoice_item_properties[0]->_translations['es']['name']
+            $invoice->items[0]->invoice_item_properties[0]->_translations['es']['name'],
         );
 
         $I18n = $this->getTableLocator()->get('I18n');
@@ -261,5 +267,41 @@ class DuplicatableBehaviorTest extends TestCase
         $this->assertInstanceOf(EntityInterface::class, $result);
 
         $this->assertSame(3, $result->get('ancestor_id'));
+    }
+
+    /**
+     * Test direct behavior access on a table without the duplication trait.
+     *
+     * @return void
+     */
+    public function testDuplicateWithDefaultConfiguration(): void
+    {
+        $this->Tags->addBehavior('Duplicatable.Duplicatable');
+
+        $result = $this->Tags->getBehavior('Duplicatable')->duplicate(1);
+
+        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertNotEquals(1, $result->get('id'));
+        $this->assertSame('Tag 1', $result->get('name'));
+        $this->assertSame(3, $this->Tags->find()->count());
+    }
+
+    /**
+     * Test that the table trait can duplicate nested entities without saving.
+     *
+     * @return void
+     */
+    public function testDuplicateEntityWithoutSaving(): void
+    {
+        $result = $this->Invoices->duplicateEntity(1);
+
+        $this->assertTrue($result->isNew());
+        $this->assertNull($result->get('id'));
+        $this->assertSame('Invoice name - copy', $result->get('name'));
+        $this->assertTrue($result->items[0]->isNew());
+        $this->assertNull($result->items[0]->get('id'));
+        $this->assertSame('NEW Property 1', $result->items[0]->invoice_item_properties[0]->name);
+        $this->assertSame(3, $this->Invoices->find()->count());
+        $this->assertSame(3, $this->Invoices->InvoiceItems->find()->count());
     }
 }

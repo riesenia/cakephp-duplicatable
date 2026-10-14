@@ -24,7 +24,10 @@ bin/cake plugin load Duplicatable
 
 ## Usage
 
-This behavior provides multiple methods for your `Table` objects.
+Add `Duplicatable\Model\Table\DuplicatableTrait` to each `Table` class that uses
+this behavior. CakePHP 6 no longer forwards behavior methods through tables;
+the trait provides `duplicate()` and `duplicateEntity()` on your table.
+You can also call these methods directly on `$table->getBehavior('Duplicatable')`.
 
 ### Method `duplicate`
 
@@ -49,8 +52,12 @@ This behavior provides a `duplicateEntity` method for the table. It mainly acts 
 ## Examples
 
 ```php
+use Duplicatable\Model\Table\DuplicatableTrait;
+
 class InvoicesTable extends Table
 {
+    use DuplicatableTrait;
+
     public function initialize(array $config): void
     {
         parent::initialize($config);

@@ -5,9 +5,12 @@ namespace TestApp\Model\Table;
 
 use Cake\ORM\Behavior\Translate\EavStrategy;
 use Cake\ORM\Table;
+use Duplicatable\Model\Table\DuplicatableTrait;
 
 class InvoicesTable extends Table
 {
+    use DuplicatableTrait;
+
     public function initialize(array $config): void
     {
         parent::initialize($config);

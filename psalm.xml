@@ -18,6 +18,7 @@
     </projectFiles>
 
     <issueHandlers>
+        <ClassMustBeFinal errorLevel="suppress" />
         <MissingClosureReturnType errorLevel="info" />
 
         <PropertyNotSetInConstructor errorLevel="info" />

@@ -4,12 +4,11 @@
          processIsolation="false"
          stopOnFailure="false"
          bootstrap="./tests/bootstrap.php"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.2/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.0/phpunit.xsd"
          cacheDirectory=".phpunit.cache">
 
     <php>
         <ini name="memory_limit" value="-1"/>
-        <ini name="apc.enable_cli" value="1"/>
         <env name="FIXTURE_SCHEMA_METADATA" value="./tests/schema.php"/>
     </php>
 
